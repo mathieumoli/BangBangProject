@@ -29,7 +29,7 @@ public class MenuPrincipal extends MenuAbstrait{
 		switch (i){  
 		case 0 : new FenetreSimple("Duel");break;
 		case 1 : new FenetreSimple("Sound Shot");break;
-		case 2 : new FenetreSimple("Credits");break;
+		case 2 : new Credits("Bang Bang Project Crédits");break;
 		case 3 : new Aide("Bang Bang Project Aide");break;
 		case 5 : System.exit(0);
 		default: System.err.println("action non définie");

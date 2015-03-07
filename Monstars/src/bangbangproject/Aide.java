@@ -14,10 +14,9 @@ import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
 public class Aide extends FenetreAbstraite {
-	JLabel titre;
-	JTextArea desAide;
-	String title;
-	Preferences prefAide;
+	private JLabel titre;
+	private JTextArea desAide;
+	private String title;
 
 	public Aide(String title) {
 		super(title);
@@ -38,7 +37,7 @@ public class Aide extends FenetreAbstraite {
 		desAide.setWrapStyleWord(true);
 		desAide.setEditable(false);
 		
-		createAideFont();
+		//createAideFont();
 		// met la police par défaut de DeViNT
     	titre.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
     	titre.setHorizontalAlignment(0);
@@ -72,12 +71,6 @@ public class Aide extends FenetreAbstraite {
 		milieu.add(mil,BorderLayout.CENTER);
 		this.add(milieu,BorderLayout.CENTER);
 
-	}
-
-	private void createAideFont() {
-		titre.setFont(new Font("Arial",Font.BOLD,20));
-		desAide.setFont(new Font("Arial",Font.BOLD,20));
-		
 	}
 
 	/**
