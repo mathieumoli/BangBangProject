@@ -18,7 +18,7 @@ public class MenuPrincipal extends MenuAbstrait{
      * vous pouvez définir autant d'options que vous voulez
      **/
 	protected String[] nomOptions() {
-		String[] noms = {"Duel","Sound Shot","Credits","Aide","Quitter"};
+		String[] noms = {"Duel","Sound Shot","Crédits","Aide","Quitter"};
 		return noms;
 	}
 
@@ -27,7 +27,7 @@ public class MenuPrincipal extends MenuAbstrait{
 	 */
 	protected void lancerOption(int i) {
 		switch (i){  
-		case 0 : new FenetreSimple("Duel");break;
+		case 0 : new OptionDuel();break;
 		case 1 : new FenetreSimple("Sound Shot");break;
 		case 2 : new Credits("Bang Bang Project Crédits");break;
 		case 3 : new Aide("Bang Bang Project Aide");break;
