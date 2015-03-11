@@ -12,25 +12,38 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
 
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Spinner;
 
 import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
 public class OptionDuel extends FenetreAbstraite {
-	private int nbRounds = 0;
-	private JTextField tRounds;
-	private JLabel labelRound;
-	private String titre;
+	protected int nbRounds = 0;
+	protected JSpinner tRounds;
+	protected JLabel labelRound;
+	protected JTextArea title;
+	protected String titre="tghghg";
+	protected JPanel rounds;
+	protected GridLayout sLayout;
 
 	public OptionDuel() {
 		super("Bang Bang Project Duel");
+		titre="Bang Bang Project Duel";
 		init();
-		titre = "Bang Bang Project Duel";
+	}
+	
+	public OptionDuel(String nom){
+		super(nom);
+		titre=nom;
+		init();
+		
 	}
 
 	@Override
@@ -39,12 +52,14 @@ public class OptionDuel extends FenetreAbstraite {
 		
 
 		JPanel ti = new JPanel();
-		JLabel title = new JLabel("Bang Bang Project Duel");
+		title = new JTextArea(titre);
+		title.setEnabled(false);
+		title.setBackground(Color.RED);
 		ti.add(title);
 		ti.setBackground(Color.red);
 		nbRounds = 0;
-		JPanel rounds = new JPanel();
-		GridLayout sLayout = new GridLayout(5,2);
+		rounds = new JPanel();
+		 sLayout = new GridLayout(5,2);
 		rounds.setLayout(sLayout);
 
 		for(int i=0;i<4;i++){
@@ -55,8 +70,10 @@ public class OptionDuel extends FenetreAbstraite {
 		labelRound = new JLabel("Nombre de Rounds :");
 		labelRound.setFont(new Font("Arial", Font.BOLD, 50));
 		title.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
-		tRounds = new JTextField(nbRounds);
+		title.setDisabledTextColor(Color.BLACK);
+		tRounds = new JSpinner();
 		tRounds.setFont(new Font("Arial", Font.BOLD, 50));
+		
 		
 		rounds.add(labelRound);
 		rounds.add(tRounds);
@@ -101,22 +118,19 @@ public class OptionDuel extends FenetreAbstraite {
 		tRounds.setFont(f);
 	}
 
-	@Override
-	protected String wavAide() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
+	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
-		// TODO Auto-generated method stub
-		return null;
+		return "../ressources/sons/accueil.wav";
 	}
 
-	@Override
+	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavRegleJeu() {
-		// TODO Auto-generated method stub
-		return null;
+		return "../ressources/sons/aideF1.wav";
+	}
+
+	// renvoie le fichier wave contenant la règle du jeu
+	protected String wavAide() {
+		return "../ressources/sons/aide.wav";
 	}
 
 }
