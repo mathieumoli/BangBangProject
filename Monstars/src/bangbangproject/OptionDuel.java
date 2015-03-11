@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -64,6 +66,7 @@ public class OptionDuel extends FenetreAbstraite {
 		JButton letsGo= new JButton("Let's Go!!!");
 		letsGo.setBackground(Color.GREEN);
 		letsGo.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
+		letsGo.addActionListener(new letsGoActionListener());
 		this.add(rounds, BorderLayout.CENTER);
 		this.add(ti, BorderLayout.NORTH);
 		this.add(letsGo,BorderLayout.SOUTH);
@@ -116,4 +119,13 @@ public class OptionDuel extends FenetreAbstraite {
 		return null;
 	}
 
+}
+
+class letsGoActionListener implements ActionListener {
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		new GameWindow(null);
+	}
+	
 }
