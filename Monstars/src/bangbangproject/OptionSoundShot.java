@@ -53,4 +53,19 @@ public class OptionSoundShot extends OptionDuel {
 		super.changeSize();
 		lDifficulty.setFont(Preferences.getData().getCurrentFont());
 	}
+
+	/**
+	 * Pour modifier les couleurs de fond et de premier plan Cette fonction est
+	 * appelée par la fonction "changeColor" de la classe
+	 * "devintAPI.Preferences" à chaque fois que l'on presse F3
+	 * 
+	 * ici on décide que le changement des couleurs s'applique sur le label lbl1
+	 **/
+	public void changeColor() {
+		// on récupère les couleurs de base dans la classe Preferences
+		Preferences pref = Preferences.getData();
+		super.changeColor();
+		lDifficulty.setBackground(pref.getCurrentBackgroundColor());
+		lDifficulty.setBackground(pref.getCurrentBackgroundColor());
+	}
 }
