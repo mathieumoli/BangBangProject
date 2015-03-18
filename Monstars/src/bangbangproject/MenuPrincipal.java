@@ -31,7 +31,7 @@ public class MenuPrincipal extends MenuAbstrait{
 		case 1 : new OptionSoundShot();break;
 		case 2 : new Credits("Bang Bang Project Crédits");break;
 		case 3 : new Aide("Bang Bang Project Aide");break;
-		case 5 : System.exit(0);
+		case 4 : System.exit(0);
 		default: System.err.println("action non définie");
 		}
 	} 
