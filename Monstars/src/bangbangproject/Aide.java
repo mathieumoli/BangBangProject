@@ -21,6 +21,12 @@ public class Aide extends FenetreAbstraite {
 	public Aide(String title) {
 		super(title);
 		this.title = title;
+				//init();
+
+	}
+
+	@Override
+	protected void init() {
 		desAide = new JTextArea();
 		desAide.setText("\nExplication du jeu\n\nLe principe du jeu est d'appuyer le plus rapidement sur le bouton B de la Wiimote en la levant après que le son ait retenti."
 				+ " Veuillez ne pas oublier de mettre la dragonne pour votre sécurité et celle des autres.\n\n"
@@ -29,12 +35,6 @@ public class Aide extends FenetreAbstraite {
 				+ "Dans les deux modes, si vous tirez avant le son, vous devrez attendre un certains temps , un vrai cowboy doit recharger son revolver. La partie s'arrête après que le nombre de round choisi soit effectué. "
 				+ "Puis le vainqueur, celui qui aura atteint le nombre de round correspondant, sera annoncé.");
 
-		init();
-
-	}
-
-	@Override
-	protected void init() {
 		titre = new JLabel();
 		titre.setText(title);
 		desAide.setLineWrap(true);
