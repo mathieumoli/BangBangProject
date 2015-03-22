@@ -17,6 +17,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Spinner;
@@ -29,27 +31,25 @@ public class OptionDuel extends FenetreAbstraite {
 	protected JSpinner tRounds;
 	protected JLabel labelRound;
 	protected JTextArea title;
-	protected String titre="tghghg";
+	protected String titre = "tghghg";
 	protected JPanel rounds;
 	protected GridLayout sLayout;
 
 	public OptionDuel() {
 		super("Bang Bang Project Duel");
-		titre="Bang Bang Project Duel";
+		titre = "Bang Bang Project Duel";
 		init();
 	}
-	
-	public OptionDuel(String nom){
+
+	public OptionDuel(String nom) {
 		super(nom);
-		titre=nom;
+		titre = nom;
 		init();
-		
+
 	}
 
 	@Override
 	protected void init() {
-
-		
 
 		JPanel ti = new JPanel();
 		title = new JTextArea(titre);
@@ -59,13 +59,12 @@ public class OptionDuel extends FenetreAbstraite {
 		ti.setBackground(Color.red);
 		nbRounds = 0;
 		rounds = new JPanel();
-		 sLayout = new GridLayout(5,2);
+		sLayout = new GridLayout(5, 2);
 		rounds.setLayout(sLayout);
 
-		for(int i=0;i<4;i++){
+		for (int i = 0; i < 4; i++) {
 			rounds.add(new JPanel());
 		}
-		
 
 		labelRound = new JLabel("Nombre de Rounds :");
 		labelRound.setFont(new Font("Arial", Font.BOLD, 50));
@@ -73,21 +72,26 @@ public class OptionDuel extends FenetreAbstraite {
 		title.setDisabledTextColor(Color.BLACK);
 		tRounds = new JSpinner();
 		tRounds.setFont(new Font("Arial", Font.BOLD, 50));
-		
-		
+		tRounds.addChangeListener(new ChangeListener() {
+
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				voix.playText("Nombre de tours gagnant " + tRounds.getValue());
+			}
+		});
+
 		rounds.add(labelRound);
 		rounds.add(tRounds);
-		for(int i=0;i<4;i++){
+		for (int i = 0; i < 4; i++) {
 			rounds.add(new JPanel());
 		}
-		JButton letsGo= new JButton("Let's Go!!!");
+		JButton letsGo = new JButton("Let's Go!!!");
 		letsGo.setBackground(Color.GREEN);
 		letsGo.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		letsGo.addActionListener(new letsGoActionListener());
 		this.add(rounds, BorderLayout.CENTER);
 		this.add(ti, BorderLayout.NORTH);
-		this.add(letsGo,BorderLayout.SOUTH);
-		
+		this.add(letsGo, BorderLayout.SOUTH);
 
 	}
 
