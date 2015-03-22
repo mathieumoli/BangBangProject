@@ -139,7 +139,7 @@ class letsGoActionListener implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new GameWindow(null);
+		new GameWindow("Game ON");
 	}
 	
 }
