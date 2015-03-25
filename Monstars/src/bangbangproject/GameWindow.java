@@ -25,9 +25,13 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 	private JPanel gamePanel;
 	private JPanel cardLayoutPanel;
 	private CowBoySprite leftCowBoy, rightCowBoy;
+	private JLabel timerLabel;
 	private int playerLeftScore,playerRightScore;
 	private JLabel score;
 	private JTextArea aide;
+	private int timerValue = 3;
+	private Timer timer;
+	private boolean gameStarted = false;
 	public GameWindow(String title) {
 		super("blah");
 		init();
@@ -88,9 +92,14 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 		rightCowBoy = new CowBoySprite(CowBoySprite.RIGHT,gamePanel);
 		score = new JLabel(playerLeftScore + "-" + playerRightScore);
 		score.setHorizontalAlignment(JLabel.CENTER);
+		score.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
 		gamePanel.add(leftCowBoy);
 		gamePanel.add(score);
 		gamePanel.add(rightCowBoy);
+		timerLabel = new JLabel();
+		timerLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		timerLabel.setHorizontalAlignment(JLabel.CENTER);
+		add(timerLabel,BorderLayout.NORTH);
 	}
 	private CowBoySprite getPlayerSprite(int playerNumber){
 		CowBoySprite sprite;
@@ -116,20 +125,46 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 				playerRightScore++;
 			
 			score.setText(playerLeftScore+"-"+playerRightScore);
-			gameMode = false;
-			ActionListener taskPerformer = new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				
-					resetState();
-					System.out.println("blah");
-					
-				}
-			};
-			Timer t = new Timer(1000,taskPerformer);
-			t.setRepeats(false);
-			t.start();
+			startResetTimer();
+
 		}
+	}
+	public void startResetTimer(){
+		gameMode = false;
+		ActionListener taskPerformer = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			
+				resetState();
+				System.out.println("blah");
+				
+			}
+		};
+		Timer t = new Timer(1000,taskPerformer);
+		t.setRepeats(false);
+		t.start();
+	}
+	public void startGameTimer(){
+		gameStarted = false;
+		timerLabel.setText(timerValue + "");
+		ActionListener taskPerformer = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(timerValue <= 1){
+					
+					gameStarted = true;
+				}
+				if(timerValue <= 0){
+					timer.stop();
+					remove(timerLabel);
+					repaint();
+				} else 
+					timerLabel.setText(--timerValue + "");
+			}
+		};
+		timer = new Timer(1000,taskPerformer);
+		
+		timer.start();
 	}
 	public void resetState(){
 		gameMode = true;
@@ -175,16 +210,18 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 				setGameMode();
 				playerOneReady = false;
 				playerTwoReady = false;
-				System.out.println("game on");
+				startGameTimer();
 				//removeKeyListener(this);
 			}
-		} else {
+		} else if(gameStarted){
 			switch(e.getKeyChar()){
 			case 'a':
-				playerDead(0);
+				playerDead(1);
+				playerShoot(0);
 				break;
 			case 'e':
-				playerDead(1);
+				playerDead(0);
+				playerShoot(1);
 				break;
 			}
 		}

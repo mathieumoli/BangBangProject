@@ -22,6 +22,7 @@ public class CowBoySprite extends JPanel {
 	private static String SHOOT = "_shoot_";
 	private static String address = "../ressources/images/cowboy";
 	private static String idleMode = "_idle";
+	private static String DEAD = "_dead";
 	private static String ext = ".png";
 	private String side;
 	private int animPos = 0;
@@ -65,32 +66,37 @@ public class CowBoySprite extends JPanel {
 	/**
 	 * Sets the cowboy in shoot state
 	 */
-	public void setShootState() {
-
+	public void setDeadState() {
+		updateImage(address + DEAD + side + ext);
+		repaint();
 	}
 
 	/**
 	 * Sets the cowboy in dead state
 	 */
-	public void setDeadState() {
+	public void setShootState() {
 		animPos = 0;
-		updateDeadState();
+		updateShootState();
 		ActionListener taskPerformer = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updateDeadState();
+				updateShootState();
 
 			}
 		};
-		timer = new Timer(125, taskPerformer);
+		if(timer != null)
+			timer.stop();
+		else
+			timer = new Timer(125, taskPerformer);
 		timer.start();
 
 	}
 
-	private void updateDeadState() {
+	private void updateShootState() {
 		if(animPos >= animDeathSize){
 			timer.stop();
+			System.out.println("end of timer");
 			resetState();
 			return;
 		}
@@ -104,6 +110,7 @@ public class CowBoySprite extends JPanel {
 	 * Resets the cowboy for a new round
 	 */
 	public void resetState() {
+		System.out.println("reset cowboy");
 		updateImage(address + idleMode+ side + ext);
 		repaint();
 	}
