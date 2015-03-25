@@ -17,12 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class CowBoySprite extends JPanel {
-	public static String LEFT = "_0";
-	public static String RIGHT = "_1";
+	public static String LEFT = "";
+	public static String RIGHT = "_d";
 	private static String SHOOT = "_shoot_";
 	private static String address = "../ressources/images/cowboy";
 	private static String idleMode = "_idle";
 	private static String ext = ".png";
+	private String side;
 	private int animPos = 0;
 	private static int animDeathSize = 4;
 	private BufferedImage bi;
@@ -37,7 +38,8 @@ public class CowBoySprite extends JPanel {
 	 */
 	public CowBoySprite(String orientation,JPanel rootPanel) {
 		this.rootPanel = rootPanel;
-		updateImage(address + idleMode + ext);
+		this.side =orientation;
+		updateImage(address + idleMode + side + ext);
 	}
 
 	private void updateImage(String url) {
@@ -92,8 +94,8 @@ public class CowBoySprite extends JPanel {
 			resetState();
 			return;
 		}
-		System.out.println(address + SHOOT + animPos + ext);
-		updateImage(address + SHOOT + animPos + ext);
+		System.out.println(address + SHOOT + animPos + side + ext);
+		updateImage(address + SHOOT + animPos + side + ext);
 		if (animPos < animDeathSize)
 			animPos++;
 	}
@@ -102,7 +104,7 @@ public class CowBoySprite extends JPanel {
 	 * Resets the cowboy for a new round
 	 */
 	public void resetState() {
-		updateImage(address + idleMode + ext);
+		updateImage(address + idleMode+ side + ext);
 		repaint();
 	}
 }

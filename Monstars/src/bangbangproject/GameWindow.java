@@ -155,7 +155,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 	protected String wavAide() {
 		return "../ressources/sons/aide.wav";
 	}
-	public void keyPressed(KeyEvent e){
+	public void keyReleased(KeyEvent e){
 		if(!gameMode){
 			switch(e.getKeyChar()){
 			case 'a':
