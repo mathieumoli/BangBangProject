@@ -77,10 +77,13 @@ public class OptionDuel extends FenetreAbstraite {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if ((int) tRounds.getValue() < 1) {
+				if ((int) tRounds.getValue()<1) {
 					tRounds.setValue(1);
-				}
-				voix.playText("Nombre de tours gagnant " + tRounds.getValue());
+
+				} else
+					voix.playText("Nombre de tours gagnant "
+							+ tRounds.getValue());
+
 			}
 		});
 
@@ -94,7 +97,7 @@ public class OptionDuel extends FenetreAbstraite {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new GameWindow("Game ON", tRounds.getValue());
+				new GameWindow("Game ON", (int)tRounds.getValue());
 			}
 
 		});
