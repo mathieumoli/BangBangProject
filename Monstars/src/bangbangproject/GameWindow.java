@@ -44,6 +44,10 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 		super("Game ON");
 		init();
 	}
+	public GameWindow(String string, int value, int value2) {
+		super("Game ON");
+		// TODO Auto-generated constructor stub
+	}
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub

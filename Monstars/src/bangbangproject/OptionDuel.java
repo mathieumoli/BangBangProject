@@ -34,6 +34,7 @@ public class OptionDuel extends FenetreAbstraite {
 	protected String titre = "tghghg";
 	protected JPanel rounds;
 	protected GridLayout sLayout;
+	protected JButton letsGo;
 
 	public OptionDuel() {
 		super("Bang Bang Project Duel");
@@ -92,12 +93,13 @@ public class OptionDuel extends FenetreAbstraite {
 		for (int i = 0; i < 4; i++) {
 			rounds.add(new JPanel());
 		}
-		JButton letsGo = new JButton("Let's Go!!!");
+		letsGo = new JButton("Let's Go!!!");
 		letsGo.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				new GameWindow("Game ON", (int)tRounds.getValue());
+				letsGo.removeActionListener(this);
 			}
 
 		});

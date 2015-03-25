@@ -3,6 +3,8 @@ package bangbangproject;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,6 +27,7 @@ public class OptionSoundShot extends OptionDuel {
 	@Override
 	public void init() {
 		super.init();
+		
 		title.setFont(new Font("Arial", Font.BOLD, Preferences.MEDIUM_SIZE));
 		lDifficulty = new JLabel("Difficulté");
 		lDifficulty.setFont(new Font("Arial", Font.BOLD, 50));
@@ -47,7 +50,16 @@ public class OptionSoundShot extends OptionDuel {
 
 			}
 		});
+		letsGo.addActionListener(new ActionListener(){
 
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new GameWindow("Game ON", (int)tRounds.getValue(),(int)difficulty.getValue());
+				letsGo.removeActionListener(this);
+				
+			}
+			
+		});
 		rounds.add(lDifficulty);
 		rounds.add(difficulty);
 		rounds.add(labelRound);
