@@ -71,11 +71,15 @@ public class OptionDuel extends FenetreAbstraite {
 		title.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		title.setDisabledTextColor(Color.BLACK);
 		tRounds = new JSpinner();
+		tRounds.setValue(1);
 		tRounds.setFont(new Font("Arial", Font.BOLD, 50));
 		tRounds.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
+				if ((int) tRounds.getValue() < 1) {
+					tRounds.setValue(1);
+				}
 				voix.playText("Nombre de tours gagnant " + tRounds.getValue());
 			}
 		});
@@ -86,9 +90,16 @@ public class OptionDuel extends FenetreAbstraite {
 			rounds.add(new JPanel());
 		}
 		JButton letsGo = new JButton("Let's Go!!!");
+		letsGo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new GameWindow("Game ON", tRounds.getValue());
+			}
+
+		});
 		letsGo.setBackground(Color.GREEN);
 		letsGo.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
-		letsGo.addActionListener(new letsGoActionListener());
 		this.add(rounds, BorderLayout.CENTER);
 		this.add(ti, BorderLayout.NORTH);
 		this.add(letsGo, BorderLayout.SOUTH);
@@ -137,13 +148,4 @@ public class OptionDuel extends FenetreAbstraite {
 		return "../ressources/sons/aide.wav";
 	}
 
-}
-
-class letsGoActionListener implements ActionListener {
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		new GameWindow("Game ON");
-	}
-	
 }
