@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,6 +31,7 @@ public class OptionDuel extends FenetreAbstraite {
 	protected String titre = "tghghg";
 	protected JPanel rounds;
 	protected GridLayout sLayout;
+	protected JButton letsGo;
 
 	public OptionDuel() {
 		super("Bang Bang Project Duel");
@@ -66,12 +69,19 @@ public class OptionDuel extends FenetreAbstraite {
 		title.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		title.setDisabledTextColor(Color.BLACK);
 		tRounds = new JSpinner();
+		tRounds.setValue(1);
 		tRounds.setFont(new Font("Arial", Font.BOLD, 50));
 		tRounds.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				voix.playText("Nombre de tours gagnant " + tRounds.getValue());
+				if ((int) tRounds.getValue()<1) {
+					tRounds.setValue(1);
+
+				} else
+					voix.playText("Nombre de tours gagnant "
+							+ tRounds.getValue());
+
 			}
 		});
 
@@ -80,7 +90,16 @@ public class OptionDuel extends FenetreAbstraite {
 		for (int i = 0; i < 4; i++) {
 			rounds.add(new JPanel());
 		}
-		JButton letsGo = new JButton("Let's Go!!!");
+		letsGo = new JButton("Let's Go!!!");
+		letsGo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new GameWindow("Game ON", (int)tRounds.getValue());
+				letsGo.removeActionListener(this);
+			}
+
+		});
 		letsGo.setBackground(Color.GREEN);
 		letsGo.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		this.add(rounds, BorderLayout.CENTER);
