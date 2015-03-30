@@ -32,7 +32,17 @@ public abstract class Controller {
 			listener.movementConfirmed(new MovementEvent(this, direction));
 		}
 	}
-	
+	public void fireShootEvent() {
+		ControllerListener[] controllerList = (ControllerListener[]) listeners
+				.getListeners(ControllerListener.class);
+		
+		if (controllerList == null)
+			return;
+
+		for (ControllerListener listener : controllerList) {
+			listener.getShootEvent(new MovementEvent(this, direction));
+		}
+	}
 	public Direction getDirection() {
 		return direction;
 	}

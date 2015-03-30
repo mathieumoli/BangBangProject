@@ -5,7 +5,6 @@
 .recommenders
 .recommenders/*
 # Package Files #
-*.jar
 *.war
 *.ear
 Monstars/.settings
