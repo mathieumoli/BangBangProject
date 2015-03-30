@@ -18,9 +18,6 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Spinner;
-
 import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
