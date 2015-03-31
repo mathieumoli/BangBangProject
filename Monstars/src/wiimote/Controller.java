@@ -45,6 +45,18 @@ public abstract class Controller {
 		}
 	}
 	
+	public void fireButtonAEvent() {
+		ControllerListener[] controllerList = (ControllerListener[]) listeners
+				.getListeners(ControllerListener.class);
+		
+		if (controllerList == null)
+			return;
+
+		for (ControllerListener listener : controllerList) {
+			listener.buttonAEvent(new MovementEvent(this, direction));
+		}
+	}
+	
 	public Direction getDirection() {
 		return direction;
 	}

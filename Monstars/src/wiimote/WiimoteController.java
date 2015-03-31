@@ -28,6 +28,9 @@ public class WiimoteController extends Controller implements WiimoteListener {
 			}
 			
 		}
+		if( arg0.isButtonAPressed()){
+			fireButtonAEvent();
+		}
 
 	}
 

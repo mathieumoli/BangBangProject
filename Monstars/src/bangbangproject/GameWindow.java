@@ -15,10 +15,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
+import wiimote.Controller;
+import wiimote.ControllerListener;
+import wiimote.MovementEvent;
+import wiimote.WiimoteController;
+import wiiusej.WiiUseApi;
+import wiiusej.WiiUseApiManager;
+import wiiusej.Wiimote;
 import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
-public class GameWindow extends FenetreAbstraite implements KeyListener {
+public class GameWindow extends FenetreAbstraite implements KeyListener,ControllerListener {
 
 	private boolean playerOneReady,playerTwoReady,gameMode;
 	private JPanel mainPanel;
@@ -32,25 +39,30 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 	private int timerValue = 3;
 	private Timer timer;
 	private boolean gameStarted = false;
+	private Wiimote[] wiimotes;
+	private Controller[] wiimotesControllers;
+	private GameEngine engine;
 	public GameWindow(String title) {
-		super("blah");
-		init();
+		this(3,false,0);
 		// TODO Auto-generated constructor stub
 	
 	}
 	public GameWindow(int roundNumbers, boolean gameType, int difficulty){
 		super("Game ON");
+		wiimotes =  WiiUseApiManager.getWiimotes(2, true);
+		/*wiimotesControllers = new Controller[2];
+		wiimotesControllers[0] = new WiimoteController(wiimotes[0]);
+		wiimotesControllers[1] = new WiimoteController(wiimotes[1]);
+		*/engine = new GameEngine(roundNumbers,gameType,this);
 		init();
 	}
 	
 	//TODO
 	public GameWindow(String string, Object value) {
-		super("Game ON");
-		init();
+		this(3,false,0);
 	}
 	public GameWindow(String string, int value, int value2) {
-		super("Game ON");
-		// TODO Auto-generated constructor stub
+		this(3,false,0);
 	}
 	@Override
 	protected void init() {
@@ -121,26 +133,20 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 	}
 	
 	public void playerDead(int playerNumber){
-		if(gameMode){
+		//if(gameMode){
 			getPlayerSprite(playerNumber).setDeadState();
-			if(playerNumber == 0)
-				playerLeftScore++;
-			else
-				playerRightScore++;
-			
-			score.setText(playerLeftScore+"-"+playerRightScore);
+			score.setText(engine.getPlayerScore(0)+"-"+engine.getPlayerScore(1));
 			startResetTimer();
 
-		}
+		//}
 	}
 	public void startResetTimer(){
-		gameMode = false;
+		//gameMode = false;
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			
 				resetState();
-				System.out.println("blah");
 				
 			}
 		};
@@ -149,26 +155,30 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 		t.start();
 	}
 	public void startGameTimer(){
+		if(timer == null  || !timer.isRunning()){
 		gameStarted = false;
+		timerValue = 3;
 		timerLabel.setText(timerValue + "");
+		voix.playShortText(timerValue + "");
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(timerValue <= 1){
-					
-					gameStarted = true;
-				}
-				if(timerValue <= 0){
+					engine.launchRound();
+					System.out.println("round launched");
 					timer.stop();
-					remove(timerLabel);
-					repaint();
-				} else 
+					timerLabel.setText("be ready !");
+				}
+				 else {
 					timerLabel.setText(--timerValue + "");
+					voix.playShortText(timerValue + "");
+				 }
 			}
 		};
 		timer = new Timer(1000,taskPerformer);
 		
 		timer.start();
+		}
 	}
 	public void resetState(){
 		gameMode = true;
@@ -217,16 +227,56 @@ public class GameWindow extends FenetreAbstraite implements KeyListener {
 				startGameTimer();
 				//removeKeyListener(this);
 			}
-		} else if(gameStarted){
+		} else if(engine.isInGame()){
 			switch(e.getKeyChar()){
 			case 'a':
-				playerDead(1);
-				playerShoot(0);
+				engine.playerShot(0);
 				break;
 			case 'e':
-				playerDead(0);
-				playerShoot(1);
+				engine.playerShot(1);
 				break;
+			}
+		}
+	}
+	
+	public void playSound(String wavSound){
+		voix.playWav(wavSound);
+	}
+	
+	@Override
+	public void movementConfirmed(MovementEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void getShootEvent(MovementEvent event) {
+		if(gameStarted){
+			int orig,cible;
+			if(event.getSource() == wiimotesControllers[0]){
+				orig = 0;
+			} else {
+				orig = 1;
+			}
+			cible = 1 - orig;
+			playerDead(cible);
+			playerShoot(orig);
+		} else {
+		}
+	}
+	@Override
+	public void buttonAEvent(MovementEvent event) {
+		if(!gameMode){
+			if(event.getSource() == wiimotesControllers[0]){
+				playerOneReady = true;
+			} else {
+				playerTwoReady = true;
+			}
+			if(playerOneReady && playerTwoReady){
+				setGameMode();
+				playerOneReady = false;
+				playerTwoReady = false;
+				startGameTimer();
+				//removeKeyListener(this);
 			}
 		}
 	}

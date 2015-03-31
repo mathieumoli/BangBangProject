@@ -6,4 +6,6 @@ public interface ControllerListener extends EventListener {
 	public void movementConfirmed(MovementEvent event);
 
 	public void getShootEvent(MovementEvent event);
+	
+	public void buttonAEvent(MovementEvent event);
 }
