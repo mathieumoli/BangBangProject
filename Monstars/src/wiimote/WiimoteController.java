@@ -18,18 +18,17 @@ public class WiimoteController extends Controller implements WiimoteListener {
 	
 	@Override
 	public void onButtonsEvent(WiimoteButtonsEvent arg0) {
-		if (arg0.isButtonAPressed()) {
+		
+		if (arg0.isButtonBPressed()) {
 			
 			if (this.direction == Direction.ASIDE) {
+				
 				System.out.println(arg0.getButtonsJustPressed());
 				fireShootEvent();
 			}
+			
+		}
 
-		}
-		
-		if (arg0.isButtonBJustReleased()){
-			//fireMovementConfirmed();
-		}
 	}
 
 	@Override
@@ -71,10 +70,10 @@ public class WiimoteController extends Controller implements WiimoteListener {
 
 	@Override
 	public void onMotionSensingEvent(MotionSensingEvent arg0) {
-		if (arg0.getOrientation().getAPitch() > 50 && arg0.getOrientation().getAPitch() < 120) {
+		if (arg0.getOrientation().getAPitch() > 15 && arg0.getOrientation().getAPitch() < 120) {
 			direction = Direction.DOWN;
 			fireMovementConfirmed();
-		} else if (arg0.getOrientation().getAPitch() < -60 && arg0.getOrientation().getAPitch() > -140) {
+		} else if (arg0.getOrientation().getAPitch() < -15 && arg0.getOrientation().getAPitch() > -140) {
 			direction = Direction.UP;
 			fireMovementConfirmed();
 		} else {

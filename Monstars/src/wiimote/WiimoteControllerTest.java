@@ -7,7 +7,7 @@ public class WiimoteControllerTest implements ControllerListener {
 	
 	private Wiimote[] wiimotes;
 	private Controller wiimote1;
-	//private Controller wiimote2;
+	// private Controller wiimote2;
 	
 	public WiimoteControllerTest() {
 		
@@ -22,27 +22,40 @@ public class WiimoteControllerTest implements ControllerListener {
 		//wiimote2.addControllerListener(this);
 	}
 	
+	/**
+	 * Return the direction of the wiimotes
+	 */
 	@Override
 	public void movementConfirmed(MovementEvent event) {
 		
 		if (event.getSource() == wiimote1) {
-			//System.out.println("Wiimote 1 : " + event.getDirection());
+			// System.out.println("Wiimote 1 : " + event.getDirection());
 		}
 
 //		if (event.getSource() == wiimote2) {
 //			System.out.println("Wiimote 2 : " + event.getDirection());
 //		}
 	}
+	
+	/**
+	 * Return the shoot event of the wiimotes
+	 */
+	@Override
+	public void getShootEvent(MovementEvent event) {
+		
+		if (event.getSource() == wiimote1) {
+			System.out.println("Shoot wiimote 1 !");
+		}
+		
+//		if (event.getSource() == wiimote2) {
+//			System.out.println("Shoot wiimote 2 !");
+//		}
+		
+	}
 
 	public static void main(String[] args) {
 		
 		new WiimoteControllerTest();
-	}
-
-	@Override
-	public void getShootEvent(MovementEvent event) {
-		
-		System.out.println("Shoot !");
 	}
 
 }
