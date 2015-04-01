@@ -66,7 +66,7 @@ public class GameEngine {
 		rounds++;
 		inGame = true;
 		gameTimer.stop();
-		gameTimer.setDelay(2000+r.nextInt(600));
+		gameTimer.setDelay(1000+r.nextInt(8000));
 		gameTimer.start();
 	}
 	public void playerShot(int player){
