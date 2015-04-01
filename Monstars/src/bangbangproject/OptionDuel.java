@@ -95,7 +95,7 @@ public class OptionDuel extends FenetreAbstraite {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				new GameWindow("Game ON", (int)tRounds.getValue());
+				new GameWindow((int)tRounds.getValue(),true,0);
 				letsGo.removeActionListener(this);
 			}
 
