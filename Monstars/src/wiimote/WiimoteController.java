@@ -23,7 +23,7 @@ public class WiimoteController extends Controller implements WiimoteListener {
 			
 			if (this.direction == Direction.ASIDE) {
 				
-				System.out.println(arg0.getButtonsJustPressed());
+				// System.out.println(arg0.getButtonsJustPressed());
 				fireShootEvent();
 			}
 			

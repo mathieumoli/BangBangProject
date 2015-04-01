@@ -13,27 +13,25 @@ import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 
 import wiimote.Controller;
 import wiimote.ControllerListener;
 import wiimote.MovementEvent;
 import wiimote.WiimoteController;
-import wiiusej.WiiUseApi;
 import wiiusej.WiiUseApiManager;
 import wiiusej.Wiimote;
 import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
-public class GameWindow extends FenetreAbstraite implements KeyListener,ControllerListener {
+public class GameWindow extends FenetreAbstraite implements KeyListener, ControllerListener {
 
-	private boolean playerOneReady,playerTwoReady,gameMode;
+	private boolean playerOneReady, playerTwoReady, gameMode;
 	private JPanel mainPanel;
 	private JPanel gamePanel;
 	private JPanel cardLayoutPanel;
 	private CowBoySprite leftCowBoy, rightCowBoy;
 	private JLabel timerLabel;
-	private int playerLeftScore,playerRightScore;
+	private int playerLeftScore, playerRightScore;
 	private JLabel score;
 	private JTextArea aide;
 	private int timerValue = 3;
@@ -42,28 +40,32 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 	private Wiimote[] wiimotes;
 	private Controller[] wiimotesControllers;
 	private GameEngine engine;
-	public GameWindow(String title) {
-		this(3,false,0);
-		// TODO Auto-generated constructor stub
 	
+	public GameWindow(String title) {
+		this(3,false,0);	
 	}
+	
 	public GameWindow(int roundNumbers, boolean gameType, int difficulty){
 		super("Game ON");
 		wiimotes =  WiiUseApiManager.getWiimotes(2, true);
-		/*wiimotesControllers = new Controller[2];
+		wiimotesControllers = new Controller[2];
 		wiimotesControllers[0] = new WiimoteController(wiimotes[0]);
 		wiimotesControllers[1] = new WiimoteController(wiimotes[1]);
-		*/engine = new GameEngine(roundNumbers,gameType,this);
+		wiimotesControllers[0].addControllerListener(this);
+		wiimotesControllers[1].addControllerListener(this);
+		engine = new GameEngine(roundNumbers,gameType,this);
 		init();
 	}
 	
-	//TODO
+
 	public GameWindow(String string, Object value) {
 		this(3,false,0);
 	}
+	
 	public GameWindow(String string, int value, int value2) {
 		this(3,false,0);
 	}
+	
 	@Override
 	protected void init() {
 		// TODO Auto-generated method stub
@@ -91,8 +93,8 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 		mainPanel.setFocusable(false);
 		add(cardLayoutPanel,BorderLayout.CENTER);
 		addKeyListener(this);
-		
 	}
+	
 	private void setGameMode(){
 		CardLayout cl = (CardLayout)(cardLayoutPanel.getLayout());
 		cl.show(cardLayoutPanel, "gamee");
@@ -117,6 +119,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 		timerLabel.setHorizontalAlignment(JLabel.CENTER);
 		add(timerLabel,BorderLayout.NORTH);
 	}
+	
 	private CowBoySprite getPlayerSprite(int playerNumber){
 		CowBoySprite sprite;
 		if(playerNumber == 0){
@@ -125,7 +128,6 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 			sprite = rightCowBoy;
 		return sprite;
 	}
-	
 	
 	public void playerShoot(int playerNumber){
 		CowBoySprite sprite = getPlayerSprite(playerNumber);
@@ -140,6 +142,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 
 		//}
 	}
+	
 	public void startResetTimer(){
 		//gameMode = false;
 		ActionListener taskPerformer = new ActionListener() {
@@ -154,16 +157,20 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 		t.setRepeats(false);
 		t.start();
 	}
-	public void startGameTimer(){
+
+	public void startGameTimer() {
 		if(timer == null  || !timer.isRunning()){
 		gameStarted = false;
 		timerValue = 3;
 		timerLabel.setText(timerValue + "");
 		voix.playShortText(timerValue + "");
+		if(engine == null)
+			engine = new GameEngine(3,true,this);
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(timerValue <= 1){
+
 					engine.launchRound();
 					System.out.println("round launched");
 					timer.stop();
@@ -180,6 +187,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 		timer.start();
 		}
 	}
+	
 	public void resetState(){
 		gameMode = true;
 		leftCowBoy.resetState();
@@ -191,11 +199,13 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 		// TODO Auto-generated method stub
 		
 	}
+	
 	@Override
 	public void changeSize() {
 		// TODO Auto-generated method stub
 		
 	}
+	
 	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
 		return "../ressources/sons/accueil.wav";
@@ -210,6 +220,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 	protected String wavAide() {
 		return "../ressources/sons/aide.wav";
 	}
+	
 	public void keyReleased(KeyEvent e){
 		if(!gameMode){
 			switch(e.getKeyChar()){
@@ -250,19 +261,18 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 	}
 	@Override
 	public void getShootEvent(MovementEvent event) {
-		if(gameStarted){
+		if(engine !=null && engine.isInGame()){
 			int orig,cible;
 			if(event.getSource() == wiimotesControllers[0]){
 				orig = 0;
 			} else {
 				orig = 1;
 			}
-			cible = 1 - orig;
-			playerDead(cible);
-			playerShoot(orig);
+			engine.playerShot(orig);
 		} else {
 		}
 	}
+	
 	@Override
 	public void buttonAEvent(MovementEvent event) {
 		if(!gameMode){
@@ -280,5 +290,4 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,Controll
 			}
 		}
 	}
-
 }

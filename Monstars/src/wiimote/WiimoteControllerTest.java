@@ -7,19 +7,19 @@ public class WiimoteControllerTest implements ControllerListener {
 	
 	private Wiimote[] wiimotes;
 	private Controller wiimote1;
-	// private Controller wiimote2;
+	private Controller wiimote2;
 	
 	public WiimoteControllerTest() {
 		
 		// Wiimotes connection :
 		// - 2 : is the number of wiimotes to connect.
 		// - True : make it rumble the first time you get the wiimotes.
-		wiimotes = WiiUseApiManager.getWiimotes(1, true);
+		wiimotes = WiiUseApiManager.getWiimotes(2, true);
 		wiimote1 = new WiimoteController(wiimotes[0]);
-		//wiimote2 = new WiimoteController(wiimotes[1]);
+		wiimote2 = new WiimoteController(wiimotes[1]);
 
 		wiimote1.addControllerListener(this);
-		//wiimote2.addControllerListener(this);
+		wiimote2.addControllerListener(this);
 	}
 	
 	/**
@@ -47,15 +47,21 @@ public class WiimoteControllerTest implements ControllerListener {
 			System.out.println("Shoot wiimote 1 !");
 		}
 		
-//		if (event.getSource() == wiimote2) {
-//			System.out.println("Shoot wiimote 2 !");
-//		}
+		if (event.getSource() == wiimote2) {
+			System.out.println("Shoot wiimote 2 !");
+		}
 		
 	}
 
 	public static void main(String[] args) {
 		
 		new WiimoteControllerTest();
+	}
+
+	@Override
+	public void buttonAEvent(MovementEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
