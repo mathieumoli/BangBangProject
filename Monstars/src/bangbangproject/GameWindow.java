@@ -40,6 +40,10 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	private Wiimote[] wiimotes;
 	private Controller[] wiimotesControllers;
 	private GameEngine engine;
+	private static String ressources = "../ressources/sons";
+	private static String player_1_name = "billythekid.wav";
+	private static String player_2_name = "joeydalton.wav";
+	
 	
 	public GameWindow(String title) {
 		this(3,false,0);	
