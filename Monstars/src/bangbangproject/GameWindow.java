@@ -160,6 +160,9 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 
 	public void startGameTimer() {
 		if(timer == null  || !timer.isRunning()){
+		if(engine.Round() > 0){
+			voix.playShortText("Joueur 1 "+engine.getPlayerScore(0)+ " joueur 2 " + engine.getPlayerScore(1));
+		}
 		gameStarted = false;
 		timerValue = 3;
 		timerLabel.setText(timerValue + "");
