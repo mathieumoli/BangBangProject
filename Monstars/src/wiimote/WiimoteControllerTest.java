@@ -3,6 +3,11 @@ package wiimote;
 import wiiusej.WiiUseApiManager;
 import wiiusej.Wiimote;
 
+/**
+ * @author Eroyas
+ *
+ */
+
 public class WiimoteControllerTest implements ControllerListener {
 	
 	private Wiimote[] wiimotes;
@@ -32,9 +37,9 @@ public class WiimoteControllerTest implements ControllerListener {
 			// System.out.println("Wiimote 1 : " + event.getDirection());
 		}
 
-//		if (event.getSource() == wiimote2) {
-//			System.out.println("Wiimote 2 : " + event.getDirection());
-//		}
+		if (event.getSource() == wiimote2) {
+			// System.out.println("Wiimote 2 : " + event.getDirection());
+		}
 	}
 	
 	/**
@@ -50,18 +55,86 @@ public class WiimoteControllerTest implements ControllerListener {
 		if (event.getSource() == wiimote2) {
 			System.out.println("Shoot wiimote 2 !");
 		}
+	}
+	
+	/**
+	 * Return the ready event of the wiimotes
+	 */
+	@Override
+	public void buttonAEvent(MovementEvent event) {
+
+		if (event.getSource() == wiimote1) {
+			System.out.println("Wiimote 1 ready !");
+		}
 		
+		if (event.getSource() == wiimote2) {
+			System.out.println("Wiimote 2 ready !");
+		}
 	}
 
+	/**
+	 * Return the up event of the wiimotes
+	 */
+	@Override
+	public void buttonUpEvent(MovementEvent event) {
+		
+		if (event.getSource() == wiimote1) {
+			System.out.println("Wiimote 1 : up event !");
+		}
+		
+		if (event.getSource() == wiimote2) {
+			System.out.println("Wiimote : up event !");
+		}
+	}
+	
+	/**
+	 * Return the down event of the wiimotes
+	 */
+	@Override
+	public void buttonDownEvent(MovementEvent event) {
+		
+		if (event.getSource() == wiimote1) {
+			System.out.println("Wiimote 1 : down event !");
+		}
+		
+		if (event.getSource() == wiimote2) {
+			System.out.println("Wiimote : down event !");
+		}
+	}
+
+	/**
+	 * Return the plus event of the wiimotes
+	 */
+	@Override
+	public void buttonPlusEvent(MovementEvent event) {
+
+		if (event.getSource() == wiimote1) {
+			System.out.println("Wiimote 1 : plus event !");
+		}
+		
+		if (event.getSource() == wiimote2) {
+			System.out.println("Wiimote : plus event !");
+		}
+	}
+
+	/**
+	 * Return the minus event of the wiimotes
+	 */
+	@Override
+	public void buttonMinusEvent(MovementEvent event) {
+
+		if (event.getSource() == wiimote1) {
+			System.out.println("Wiimote 1 : minus event !");
+		}
+		
+		if (event.getSource() == wiimote2) {
+			System.out.println("Wiimote : minus event !");
+		}
+	}
+	
 	public static void main(String[] args) {
 		
 		new WiimoteControllerTest();
-	}
-
-	@Override
-	public void buttonAEvent(MovementEvent event) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

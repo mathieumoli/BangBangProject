@@ -2,6 +2,11 @@ package wiimote;
 
 import java.util.EventObject;
 
+/**
+ * @author Eroyas
+ *
+ */
+
 public class MovementEvent extends EventObject {
 	private Direction direction;
 	

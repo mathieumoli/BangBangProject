@@ -257,34 +257,54 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		voix.playWav(wavSound);
 	}
 	
+	/**
+	 * Return the direction of the wiimotes
+	 */
 	@Override
 	public void movementConfirmed(MovementEvent event) {
-		// TODO Auto-generated method stub
-		
+
+		if (event.getSource() == wiimotesControllers[0]) {
+			// System.out.println("Wiimote 1 : " + event.getDirection());
+		}
+
+		if (event.getSource() == wiimotesControllers[1]) {
+			// System.out.println("Wiimote 2 : " + event.getDirection());
+		}
 	}
+	
+	/**
+	 * Return the shoot event of the wiimotes
+	 */
 	@Override
 	public void getShootEvent(MovementEvent event) {
-		if(engine !=null && engine.isInGame()){
-			int orig,cible;
-			if(event.getSource() == wiimotesControllers[0]){
+		
+		if(engine != null && engine.isInGame()) {
+			int orig;
+			
+			if(event.getSource() == wiimotesControllers[0]) {
 				orig = 0;
 			} else {
 				orig = 1;
 			}
+			
 			engine.playerShot(orig);
-		} else {
 		}
 	}
 	
+	/**
+	 * Return the ready event of the wiimotes
+	 */
 	@Override
 	public void buttonAEvent(MovementEvent event) {
-		if(!gameMode){
+		
+		if(!gameMode) {
 			if(event.getSource() == wiimotesControllers[0]){
 				playerOneReady = true;
 			} else {
 				playerTwoReady = true;
 			}
-			if(playerOneReady && playerTwoReady){
+			
+			if(playerOneReady && playerTwoReady) {
 				setGameMode();
 				playerOneReady = false;
 				playerTwoReady = false;
@@ -293,4 +313,65 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 			}
 		}
 	}
+
+	/**
+	 * Return the up event of the wiimotes
+	 */
+	@Override
+	public void buttonUpEvent(MovementEvent event) {
+		
+		if (event.getSource() == wiimotesControllers[0]) {
+			System.out.println("Wiimote 1 : up event !");
+		}
+		
+		if (event.getSource() == wiimotesControllers[1]) {
+			System.out.println("Wiimote : up event !");
+		}
+	}
+	
+	/**
+	 * Return the down event of the wiimotes
+	 */
+	@Override
+	public void buttonDownEvent(MovementEvent event) {
+		
+		if (event.getSource() == wiimotesControllers[0]) {
+			System.out.println("Wiimote 1 : down event !");
+		}
+		
+		if (event.getSource() == wiimotesControllers[1]) {
+			System.out.println("Wiimote : down event !");
+		}
+	}
+
+	/**
+	 * Return the plus event of the wiimotes
+	 */
+	@Override
+	public void buttonPlusEvent(MovementEvent event) {
+
+		if (event.getSource() == wiimotesControllers[0]) {
+			System.out.println("Wiimote 1 : plus event !");
+		}
+		
+		if (event.getSource() == wiimotesControllers[1]) {
+			System.out.println("Wiimote : plus event !");
+		}
+	}
+
+	/**
+	 * Return the minus event of the wiimotes
+	 */
+	@Override
+	public void buttonMinusEvent(MovementEvent event) {
+
+		if (event.getSource() == wiimotesControllers[0]) {
+			System.out.println("Wiimote 1 : minus event !");
+		}
+		
+		if (event.getSource() == wiimotesControllers[1]) {
+			System.out.println("Wiimote : minus event !");
+		}
+	}
+	
 }
