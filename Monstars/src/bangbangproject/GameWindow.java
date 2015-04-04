@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,6 +59,8 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		wiimotesControllers[0].addControllerListener(this);
 		wiimotesControllers[1].addControllerListener(this);
 		*/engine = new GameEngine(roundNumbers,gameType,this);
+		System.out.println("Round numbers:"+roundNumbers);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		init();
 	}
 	
@@ -163,20 +166,24 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	}
 
 	public void startGameTimer() {
-		if(timer == null  || !timer.isRunning()){
+		//if(timer == null  || !timer.isRunning()){
 		if(engine.Round() > 0){
 			voix.playShortText("Joueur 1 "+engine.getPlayerScore(0)+ " joueur 2 " + engine.getPlayerScore(1));
 		}
 		gameStarted = false;
 		timerValue = 3;
-		timerLabel.setText(timerValue + "");
-		voix.playShortText(timerValue + "");
 		if(engine == null)
 			engine = new GameEngine(3,true,this);
+		timerLabel.setText("be ready !");
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(timerValue <= 1){
+				if(engine.Round() >  engine.RoundNumber() + 1){
+					System.out.println("Game over");
+				}else
+					engine.launchRound();
+				
+				/*		if(timerValue <= 1){
 
 					engine.launchRound();
 					System.out.println("round launched");
@@ -187,12 +194,14 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 					timerLabel.setText(--timerValue + "");
 					voix.playShortText(timerValue + "");
 				 }
-			}
-		};
-		timer = new Timer(1000,taskPerformer);
+			}*/
+			timer.stop();
+		}};
+			timer = new Timer(1000,taskPerformer);
+			timer.setRepeats(false);
 		
-		timer.start();
-		}
+			timer.start();
+		//}
 	}
 	
 	public void resetState(){
