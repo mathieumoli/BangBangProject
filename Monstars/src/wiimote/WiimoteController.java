@@ -5,6 +5,11 @@ import wiiusej.wiiusejevents.physicalevents.*;
 import wiiusej.wiiusejevents.wiiuseapievents.*;
 import wiiusej.wiiusejevents.utils.WiimoteListener;
 
+/**
+ * @author Eroyas
+ *
+ */
+
 public class WiimoteController extends Controller implements WiimoteListener {
 
 	private Wiimote wiimote;
@@ -19,17 +24,38 @@ public class WiimoteController extends Controller implements WiimoteListener {
 	@Override
 	public void onButtonsEvent(WiimoteButtonsEvent arg0) {
 		
+		// Shoot event
 		if (arg0.isButtonBPressed()) {
-			
 			if (this.direction == Direction.ASIDE) {
-				
-				// System.out.println(arg0.getButtonsJustPressed());
 				fireShootEvent();
+				this.wiimote.activateRumble();
+				// this.wiimote.deactivateRumble();
 			}
-			
 		}
-		if( arg0.isButtonAPressed()){
+		
+		// Ready event
+		if (arg0.isButtonAPressed()) {
 			fireButtonAEvent();
+		}
+		
+		// Menu up event
+		if (arg0.isButtonUpPressed()) {
+			fireButtonUpEvent();
+		}
+		
+		// Menu down event
+		if (arg0.isButtonDownPressed()) {	
+			fireButtonDownEvent();
+		}
+		
+		// Menu plus event
+		if (arg0.isButtonPlusPressed()) {
+			fireButtonPlusEvent();
+		}
+		
+		// Menu minus event
+		if (arg0.isButtonMinusPressed()) {
+			fireButtonMinusEvent();
 		}
 
 	}
@@ -73,6 +99,8 @@ public class WiimoteController extends Controller implements WiimoteListener {
 
 	@Override
 	public void onMotionSensingEvent(MotionSensingEvent arg0) {
+		
+		// Orientation event
 		if (arg0.getOrientation().getAPitch() > 15 && arg0.getOrientation().getAPitch() < 120) {
 			direction = Direction.DOWN;
 			fireMovementConfirmed();

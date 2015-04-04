@@ -1,6 +1,12 @@
 package wiimote;
 
+/**
+ * @author Eroyas
+ *
+ */
+
 public enum Direction {
+	
 	UP("UP"), ASIDE("ASIDE"), DOWN("DOWN"), NONE("NONE");
 	
 	private String str;
