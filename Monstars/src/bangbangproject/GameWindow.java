@@ -51,13 +51,13 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	
 	public GameWindow(int roundNumbers, boolean gameType, int difficulty){
 		super("Game ON");
-		wiimotes =  WiiUseApiManager.getWiimotes(2, true);
+		/*wiimotes =  WiiUseApiManager.getWiimotes(2, true);
 		wiimotesControllers = new Controller[2];
 		wiimotesControllers[0] = new WiimoteController(wiimotes[0]);
 		wiimotesControllers[1] = new WiimoteController(wiimotes[1]);
 		wiimotesControllers[0].addControllerListener(this);
 		wiimotesControllers[1].addControllerListener(this);
-		engine = new GameEngine(roundNumbers,gameType,this);
+		*/engine = new GameEngine(roundNumbers,gameType,this);
 		init();
 	}
 	
