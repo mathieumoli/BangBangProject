@@ -27,7 +27,7 @@ public class OptionSoundShot extends OptionDuel {
 	@Override
 	public void init() {
 		super.init();
-		
+
 		title.setFont(new Font("Arial", Font.BOLD, Preferences.MEDIUM_SIZE));
 		lDifficulty = new JLabel("Difficulté");
 		lDifficulty.setFont(new Font("Arial", Font.BOLD, 50));
@@ -45,20 +45,21 @@ public class OptionSoundShot extends OptionDuel {
 			public void stateChanged(ChangeEvent e) {
 				System.out.println(difficulty.getValue());
 				if (!difficulty.getValueIsAdjusting())
-					
+
 					voix.playText("Difficulté niveau " + difficulty.getValue());
 
 			}
 		});
-		letsGo.addActionListener(new ActionListener(){
+		letsGo.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GameWindow("Game ON", (int)tRounds.getValue(),(int)difficulty.getValue());
+				new GameWindow("Game ON", (int) tRounds.getValue(),
+						(int) difficulty.getValue());
 				letsGo.removeActionListener(this);
-				
+
 			}
-			
+
 		});
 		rounds.add(lDifficulty);
 		rounds.add(difficulty);
@@ -90,4 +91,15 @@ public class OptionSoundShot extends OptionDuel {
 		lDifficulty.setBackground(pref.getCurrentBackgroundColor());
 		lDifficulty.setBackground(pref.getCurrentBackgroundColor());
 	}
+
+	// renvoie le fichier wave contenant le message d'accueil
+	protected String wavAccueil() {
+		return "../ressources/sons/soundshot.wav";
+	}
+
+	// renvoie le fichier wave contenant la règle du jeu
+	protected String wavRegleJeu() {
+		return "../ressources/sons/soundshot.wav";
+	}
+
 }
