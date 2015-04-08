@@ -41,12 +41,13 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	private boolean gameStarted = false;
 	private Wiimote[] wiimotes;
 	private Controller[] wiimotesControllers;
+	private JLabel[] loadingLabels;
 	private GameEngine engine;
 	private static String ressources = "../ressources/sons";
 	private static String player_1_name = "billythekid.wav";
 	private static String player_2_name = "joeydalton.wav";
 	
-	
+	private boolean end = false;
 	public GameWindow(String title) {
 		this(3,false,0);	
 	}
@@ -124,35 +125,60 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		gamePanel.setLayout(new BorderLayout());
 		JPanel centerPanel = new JPanel();
 		centerPanel.setLayout(new GridLayout(1,3));
+		JPanel leftPane = new JPanel();
+		leftPane.setLayout(new BorderLayout());
+		JPanel rightPane = new JPanel();
+		rightPane.setLayout(new BorderLayout());
 		leftCowBoy = new CowBoySprite(CowBoySprite.LEFT,gamePanel);
 		rightCowBoy = new CowBoySprite(CowBoySprite.RIGHT,gamePanel);
+		leftPane.add(leftCowBoy);
+		rightPane.add(rightCowBoy);
 		score = new JLabel(playerLeftScore + "-" + playerRightScore);
 		score.setHorizontalAlignment(JLabel.CENTER);
 		score.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
-		centerPanel.add(leftCowBoy);
+		centerPanel.add(leftPane);
 		centerPanel.add(score);
-		centerPanel.add(rightCowBoy);
+		centerPanel.add(rightPane);
 		timerLabel = new JLabel();
 		timerLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		loadingLabels = new JLabel[2];
+		loadingLabels[0] = new JLabel("chargement");
+		loadingLabels[1] = new JLabel("chargement");
+		loadingLabels[0].setVisible(false);
+		loadingLabels[1].setVisible(false);
+		loadingLabels[0].setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+
+		loadingLabels[1].setFont(new Font("Arial",Font.BOLD,Preferences.MEDIUM_SIZE));
+		leftPane.add(loadingLabels[0],BorderLayout.SOUTH);
+		rightPane.add(loadingLabels[1], BorderLayout.SOUTH);
 		timerLabel.setHorizontalAlignment(JLabel.CENTER);
 		gamePanel.add(centerPanel,BorderLayout.CENTER);
 		gamePanel.add(timerLabel,BorderLayout.NORTH);
 	}
+	
+	public void setLoadingVisible(boolean visible,int player){
+		loadingLabels[player].setVisible(visible);
+		repaint();
+	}
+	
 	private void initEndGame(int playerNumber){
-		JPanel endPanel = new JPanel();
-		endPanel.setLayout(new GridLayout(1,3));
-		CowBoySprite c = getPlayerSprite(playerNumber);
-		c.resetState();
-		endPanel.add(c);
-		String winGame =getPlayerString(playerNumber) + " a gagné";
-		JLabel winLabel = new JLabel(winGame);
-		voix.playWav(getPlayerSound(playerNumber));
-		voix.playShortText(" a gagné");
-		winLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
-		endPanel.add(winLabel);
-		cardLayoutPanel.add(endPanel, "end");
-		CardLayout cl = (CardLayout) cardLayoutPanel.getLayout();
-		cl.show(cardLayoutPanel,"end");
+		if(!end){
+			end = true;
+			JPanel endPanel = new JPanel();
+			endPanel.setLayout(new GridLayout(1,3));
+			CowBoySprite c = getPlayerSprite(playerNumber);
+			c.resetState();
+			endPanel.add(c);
+			String winGame =getPlayerString(playerNumber) + " a gagné";
+			JLabel winLabel = new JLabel(winGame);
+			voix.playWav(getPlayerSound(playerNumber),true);
+			voix.playShortText(" a gagné",true);
+			winLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+			endPanel.add(winLabel);
+			cardLayoutPanel.add(endPanel, "end");
+			CardLayout cl = (CardLayout) cardLayoutPanel.getLayout();
+			cl.show(cardLayoutPanel,"end");
+		}
 		
 	}
 	public String getPlayerString(int playerNumber){
@@ -165,9 +191,9 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	public String getPlayerSound(int playerNumber){
 		String base = ressources;
 		if(playerNumber == 0){
-			return base+"billythekid.wav";
+			return base+"/billythekid.wav";
 		} else {
-			return base + "joeydalton.wav";
+			return base + "/joeydalton.wav";
 		}
 	}
 	private CowBoySprite getPlayerSprite(int playerNumber){
@@ -210,12 +236,18 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 
 	public void startGameTimer() {
 		//if(timer == null  || !timer.isRunning()){
-		if(engine.Round() > 0){
-			voix.playWav(getPlayerSound(0));
-			voix.playShortText(engine.getPlayerScore(0) +"");
-			voix.playWav(getPlayerSound(1));
-			voix.playShortText(engine.getPlayerScore(1) +"");
+		boolean launch = false;
+		if(engine.Round() > 0 && engine.maxScore() < engine.RoundNumber()){
+			voix.playWav(getPlayerSound(0),true);
+			voix.playShortText(engine.getPlayerScore(0) +"",true);
+			voix.playWav(getPlayerSound(1),true);
+			voix.playShortText(engine.getPlayerScore(1) +"",true);
+			launch = true;
 		}
+		if(engine.maxScore() >=  engine.RoundNumber() ){
+			initEndGame(engine.getWinner());
+		}
+		
 		gameStarted = false;
 		timerValue = 3;
 		if(engine == null)
@@ -224,9 +256,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(engine.Round() >  engine.RoundNumber() ){
-					initEndGame(engine.getWinner());
-				}else
+				if(!end)
 					engine.launchRound();
 				
 				/*		if(timerValue <= 1){
@@ -243,7 +273,11 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 			}*/
 			timer.stop();
 		}};
-			timer = new Timer(1000,taskPerformer);
+		int time = 0;
+		if(launch)
+			time = 10000;
+		
+			timer = new Timer(time,taskPerformer);
 			timer.setRepeats(false);
 		
 			timer.start();

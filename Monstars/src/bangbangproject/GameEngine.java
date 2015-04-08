@@ -17,6 +17,7 @@ public class GameEngine {
 	private GameWindow wind;
 	private Timer errorTimer[];
 	private Timer gameTimer;
+	private Timer waitEndTimer;
 	private Random r;
 	public GameEngine(int roundNumber, boolean mode,GameWindow wind){
 		this.roundNumber = roundNumber;
@@ -40,7 +41,16 @@ public class GameEngine {
 		errorTimer[1] = new Timer(800, new Reload(1));
 		gameTimer = new Timer(1000,taskPerformer);
 		gameTimer.setRepeats(false);
+		waitEndTimer = new Timer(350,waitLaunchPerformer);
+		waitEndTimer.setRepeats(false);
+		
 	}
+	ActionListener waitLaunchPerformer = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			wind.startGameTimer();
+		}
+	};
 	ActionListener taskPerformer = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -65,8 +75,10 @@ public class GameEngine {
 		System.out.println("launch round" + inGame);
 		rounds++;
 		inGame = true;
+		wind.setLoadingVisible(false, 0);
+		wind.setLoadingVisible(false, 1);
 		gameTimer.stop();
-		gameTimer.setDelay(1000+r.nextInt(8000));
+		gameTimer.setDelay(2500+r.nextInt(8000));
 		gameTimer.start();
 	}
 	public void playerShot(int player){
@@ -76,8 +88,9 @@ public class GameEngine {
 			playerScore[player]++;
 			wind.playerDead(1-player);
 			wind.playerShoot(player);
-			wind.startGameTimer();
+
 			wind.playSound("../ressources/sons/coupdefeu.wav");
+			wind.startGameTimer();
 			errorTimer[0].stop();
 			errorTimer[1].stop();
 			errorTimer[0].setRepeats(false);
@@ -93,7 +106,9 @@ public class GameEngine {
 			errorTimer[player].start();
 			canShoot[player] = false;
 			misfire[player] = true;
+			wind.setLoadingVisible(true, player);
 		}
+		System.out.println("fire");
 	}
 	class Reload implements ActionListener {
 	private int player;
@@ -106,6 +121,7 @@ public class GameEngine {
 				misfire[player] = false;
 				canShoot[player] = true;
 				wind.playSound("../ressources/sons/reload.wav");
+				wind.setLoadingVisible(false, player);
 			}
 		}
 		
@@ -129,4 +145,10 @@ public class GameEngine {
 			return 0;
 		return 1;
 	}
+	public int maxScore(){
+		if(playerScore[0] > playerScore[1])
+			return playerScore[0];
+		return playerScore[1];
+	}
+	
 }
