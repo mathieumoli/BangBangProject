@@ -29,7 +29,7 @@ public class WiimoteController extends Controller implements WiimoteListener {
 			if (this.direction == Direction.ASIDE) {
 				fireShootEvent();
 				this.wiimote.activateRumble();
-				// this.wiimote.deactivateRumble();
+				this.wiimote.deactivateRumble();
 			}
 		}
 		
