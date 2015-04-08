@@ -92,7 +92,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 				+ "Si vous tirez avant le son, vous devrez attendre un certains temps , un vrai cowboy doit recharger son revolver. La partie s'arrête après que le nombre de round choisi soit effectué. "
 				+ "Puis le vainqueur, celui qui aura atteint le nombre de round correspondant, sera annoncé."
 				+ "Lorsque vous êtes prêt à jouer, appuyez sur le bouton A de la Wiimote"
-				+ "La prochaine fois pour ne pas écouter ce message et passer directement au jeu appuyez sur le bouton 1");
+				+ "La prochaine fois pour ne pas écouter ce message et passer directement au jeu appuyez sur le bouton A");
 		aide.setLineWrap(true);
 		aide.setWrapStyleWord(true);
 		aide.setEditable(false);
@@ -388,9 +388,11 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 			
 			if(playerOneReady && playerTwoReady) {
 				setGameMode();
+				this.voix.forceStop();
 				playerOneReady = false;
 				playerTwoReady = false;
 				startGameTimer();
+				this.voix.forceStop();
 				//removeKeyListener(this);
 			}
 		}
@@ -458,19 +460,16 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	
 	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
-		// TODO ajouter nos sons
-		return "../ressources/sons/explicationDuel.wav";
+				return "../ressources/sons/explicationDuel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavRegleJeu() {
-		// TODO ajouter nos sons
-		return "../ressources/sons/explicationDuel.wav";
+				return "../ressources/sons/explicationDuel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavAide() {
-		// TODO ajouter nos sons
-		return "../ressources/sons/explicationDuel.wav";
+				return "../ressources/sons/explicationDuel.wav";
 	}
 }
