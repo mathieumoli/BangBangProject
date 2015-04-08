@@ -24,6 +24,11 @@ public class WiimoteController extends Controller implements WiimoteListener {
 	@Override
 	public void onButtonsEvent(WiimoteButtonsEvent arg0) {
 		
+		// Ready event
+		if (arg0.isButtonAPressed()) {
+			fireButtonAEvent();
+		}
+		
 		// Shoot event
 		if (arg0.isButtonBPressed()) {
 			if (this.direction == Direction.ASIDE) {
@@ -31,11 +36,6 @@ public class WiimoteController extends Controller implements WiimoteListener {
 				this.wiimote.activateRumble();
 				this.wiimote.deactivateRumble();
 			}
-		}
-		
-		// Ready event
-		if (arg0.isButtonAPressed()) {
-			fireButtonAEvent();
 		}
 		
 		// Menu up event
