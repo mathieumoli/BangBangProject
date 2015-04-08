@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -82,15 +83,23 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		playerLeftScore = 0;
 		playerRightScore = 0;
 		mainPanel = new JPanel();
+		JScrollPane scrollPane;
 		aide = new JTextArea();
-		aide.setText("\nExplication du jeu\n\nLe principe du jeu est d'appuyer le plus rapidement sur le bouton B de la Wiimote en la levant après que un BONG ait retenti. Veuillez ne pas oublier de mettre la dragonne pour votre sécurité et celle des autres.");
+		aide.setText("\nExplication du jeu\n\nLe principe du jeu est d'appuyer le plus rapidement sur le bouton B de la Wiimote en la levant après que le son ait retenti."
+				+ " Veuillez ne pas oublier de mettre la dragonne pour votre sécurité et celle des autres.\n\n"
+				+ "Mode Duel : Le son retentissant est un BONG classique.\n\n"
+				+ "Si vous tirez avant le son, vous devrez attendre un certains temps , un vrai cowboy doit recharger son revolver. La partie s'arrête après que le nombre de round choisi soit effectué. "
+				+ "Puis le vainqueur, celui qui aura atteint le nombre de round correspondant, sera annoncé."
+				+ "Lorsque vous êtes prêt à jouer, appuyez sur le bouton A de la Wiimote"
+				+ "La prochaine fois pour ne pas écouter ce message et passer directement au jeu appuyez sur le bouton 1");
 		aide.setLineWrap(true);
 		aide.setWrapStyleWord(true);
 		aide.setEditable(false);
 		aide.setFocusable(false);
 		aide.setFont(new Font("Arial",Font.BOLD,Preferences.MEDIUM_SIZE));
+		scrollPane = new JScrollPane(aide);
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.add(aide);
+		mainPanel.add(scrollPane);
 		cardLayoutPanel = new JPanel();
 		cardLayoutPanel.setLayout(new CardLayout());
 		initGameMode();
@@ -112,21 +121,55 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	private void initGameMode(){
 
 		gamePanel = new JPanel();
-		gamePanel.setLayout(new GridLayout(1,3));
+		gamePanel.setLayout(new BorderLayout());
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new GridLayout(1,3));
 		leftCowBoy = new CowBoySprite(CowBoySprite.LEFT,gamePanel);
 		rightCowBoy = new CowBoySprite(CowBoySprite.RIGHT,gamePanel);
 		score = new JLabel(playerLeftScore + "-" + playerRightScore);
 		score.setHorizontalAlignment(JLabel.CENTER);
 		score.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
-		gamePanel.add(leftCowBoy);
-		gamePanel.add(score);
-		gamePanel.add(rightCowBoy);
+		centerPanel.add(leftCowBoy);
+		centerPanel.add(score);
+		centerPanel.add(rightCowBoy);
 		timerLabel = new JLabel();
 		timerLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
 		timerLabel.setHorizontalAlignment(JLabel.CENTER);
-		add(timerLabel,BorderLayout.NORTH);
+		gamePanel.add(centerPanel,BorderLayout.CENTER);
+		gamePanel.add(timerLabel,BorderLayout.NORTH);
 	}
-	
+	private void initEndGame(int playerNumber){
+		JPanel endPanel = new JPanel();
+		endPanel.setLayout(new GridLayout(1,3));
+		CowBoySprite c = getPlayerSprite(playerNumber);
+		c.resetState();
+		endPanel.add(c);
+		String winGame =getPlayerString(playerNumber) + " a gagné";
+		JLabel winLabel = new JLabel(winGame);
+		voix.playWav(getPlayerSound(playerNumber));
+		voix.playShortText(" a gagné");
+		winLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		endPanel.add(winLabel);
+		cardLayoutPanel.add(endPanel, "end");
+		CardLayout cl = (CardLayout) cardLayoutPanel.getLayout();
+		cl.show(cardLayoutPanel,"end");
+		
+	}
+	public String getPlayerString(int playerNumber){
+		if(playerNumber == 0){
+			return "Billy the kid";
+		} else {
+			return "Joey Dalton";
+		}
+	}
+	public String getPlayerSound(int playerNumber){
+		String base = ressources;
+		if(playerNumber == 0){
+			return base+"billythekid.wav";
+		} else {
+			return base + "joeydalton.wav";
+		}
+	}
 	private CowBoySprite getPlayerSprite(int playerNumber){
 		CowBoySprite sprite;
 		if(playerNumber == 0){
@@ -168,7 +211,10 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	public void startGameTimer() {
 		//if(timer == null  || !timer.isRunning()){
 		if(engine.Round() > 0){
-			voix.playShortText("Joueur 1 "+engine.getPlayerScore(0)+ " joueur 2 " + engine.getPlayerScore(1));
+			voix.playWav(getPlayerSound(0));
+			voix.playShortText(engine.getPlayerScore(0) +"");
+			voix.playWav(getPlayerSound(1));
+			voix.playShortText(engine.getPlayerScore(1) +"");
 		}
 		gameStarted = false;
 		timerValue = 3;
@@ -178,8 +224,8 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(engine.Round() >  engine.RoundNumber() + 1){
-					System.out.println("Game over");
+				if(engine.Round() >  engine.RoundNumber() ){
+					initEndGame(engine.getWinner());
 				}else
 					engine.launchRound();
 				
@@ -210,16 +256,19 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		rightCowBoy.resetState();
 	}
 	
-	@Override
-	public void changeColor() {
-		// TODO Auto-generated method stub
-		
+	public  void changeColor() {
+    	// on récupère les couleurs de base dans la classe Preferences 
+		Preferences pref = Preferences.getData();
+		aide.setBackground(pref.getCurrentBackgroundColor());
+		aide.setForeground(pref.getCurrentForegroundColor());
 	}
 	
-	@Override
-	public void changeSize() {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Pour modifier la police des textes à chaque fois que l'on presse F4 
+	 */
+	public void changeSize(){
+		Font f = Preferences.getData().getCurrentFont();
+		aide.setFont(f);
 	}
 	
 	

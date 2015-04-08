@@ -124,4 +124,9 @@ public class GameEngine {
 		return roundNumber;
 	}
 	
+	public int getWinner(){
+		if(playerScore[0] > playerScore[1])
+			return 0;
+		return 1;
+	}
 }
