@@ -83,6 +83,7 @@ public class GameEngine {
 			errorTimer[0].setRepeats(false);
 			errorTimer[1].setRepeats(false);
 			inGame = false;
+			rounds++;
 			System.out.println("player "+player+" shoots");
 		} else if(misfire[player]){
 			wind.playSound("../ressources/sons/emptychamber.wav");
@@ -118,6 +119,9 @@ public class GameEngine {
 	}
 	public int Round(){
 		return rounds;
+	}
+	public int RoundNumber(){
+		return roundNumber;
 	}
 	
 }

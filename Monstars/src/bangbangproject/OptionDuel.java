@@ -97,6 +97,7 @@ public class OptionDuel extends FenetreAbstraite {
 			public void actionPerformed(ActionEvent arg0) {
 				new GameWindow((int)tRounds.getValue(),true,0);
 				letsGo.removeActionListener(this);
+				
 			}
 
 		});
@@ -137,17 +138,17 @@ public class OptionDuel extends FenetreAbstraite {
 
 	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
-		return "../ressources/sons/accueil.wav";
+		return "../ressources/sons/duel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavRegleJeu() {
-		return "../ressources/sons/aideF1.wav";
+		return "../ressources/sons/duel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavAide() {
-		return "../ressources/sons/aide.wav";
+		return "../ressources/sons/explication.wav";
 	}
 
 }

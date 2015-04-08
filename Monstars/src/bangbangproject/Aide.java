@@ -106,18 +106,18 @@ public class Aide extends FenetreAbstraite {
 	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
 		// TODO ajouter nos sons
-		return "../ressources/sons/accueilSimple.wav";
+		return "../ressources/sons/explication.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavRegleJeu() {
 		// TODO ajouter nos sons
-		return "../ressources/sons/aideF1.wav";
+		return "../ressources/sons/explication.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavAide() {
 		// TODO ajouter nos sons
-		return "../ressources/sons/aide.wav";
+		return "../ressources/sons/explication.wav";
 	}
 }

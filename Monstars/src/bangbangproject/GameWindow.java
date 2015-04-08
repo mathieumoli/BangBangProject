@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JFrame;
 import javax.swing.Timer;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,6 +41,10 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	private Wiimote[] wiimotes;
 	private Controller[] wiimotesControllers;
 	private GameEngine engine;
+	private static String ressources = "../ressources/sons";
+	private static String player_1_name = "billythekid.wav";
+	private static String player_2_name = "joeydalton.wav";
+	
 	
 	public GameWindow(String title) {
 		this(3,false,0);	
@@ -47,13 +52,15 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	
 	public GameWindow(int roundNumbers, boolean gameType, int difficulty){
 		super("Game ON");
-		wiimotes =  WiiUseApiManager.getWiimotes(2, true);
+		/*wiimotes =  WiiUseApiManager.getWiimotes(2, true);
 		wiimotesControllers = new Controller[2];
 		wiimotesControllers[0] = new WiimoteController(wiimotes[0]);
 		wiimotesControllers[1] = new WiimoteController(wiimotes[1]);
 		wiimotesControllers[0].addControllerListener(this);
 		wiimotesControllers[1].addControllerListener(this);
-		engine = new GameEngine(roundNumbers,gameType,this);
+		*/engine = new GameEngine(roundNumbers,gameType,this);
+		System.out.println("Round numbers:"+roundNumbers);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		init();
 	}
 	
@@ -159,20 +166,24 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	}
 
 	public void startGameTimer() {
-		if(timer == null  || !timer.isRunning()){
+		//if(timer == null  || !timer.isRunning()){
 		if(engine.Round() > 0){
 			voix.playShortText("Joueur 1 "+engine.getPlayerScore(0)+ " joueur 2 " + engine.getPlayerScore(1));
 		}
 		gameStarted = false;
 		timerValue = 3;
-		timerLabel.setText(timerValue + "");
-		voix.playShortText(timerValue + "");
 		if(engine == null)
 			engine = new GameEngine(3,true,this);
+		timerLabel.setText("be ready !");
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(timerValue <= 1){
+				if(engine.Round() >  engine.RoundNumber() + 1){
+					System.out.println("Game over");
+				}else
+					engine.launchRound();
+				
+				/*		if(timerValue <= 1){
 
 					engine.launchRound();
 					System.out.println("round launched");
@@ -183,12 +194,14 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 					timerLabel.setText(--timerValue + "");
 					voix.playShortText(timerValue + "");
 				 }
-			}
-		};
-		timer = new Timer(1000,taskPerformer);
+			}*/
+			timer.stop();
+		}};
+			timer = new Timer(1000,taskPerformer);
+			timer.setRepeats(false);
 		
-		timer.start();
-		}
+			timer.start();
+		//}
 	}
 	
 	public void resetState(){
@@ -209,20 +222,6 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		
 	}
 	
-	// renvoie le fichier wave contenant le message d'accueil
-	protected String wavAccueil() {
-		return "../ressources/sons/accueil.wav";
-	}
-
-	// renvoie le fichier wave contenant la règle du jeu
-	protected String wavRegleJeu() {
-		return "../ressources/sons/aideF1.wav";
-	}
-
-	// renvoie le fichier wave contenant la règle du jeu
-	protected String wavAide() {
-		return "../ressources/sons/aide.wav";
-	}
 	
 	public void keyReleased(KeyEvent e){
 		if(!gameMode){
@@ -374,4 +373,21 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		}
 	}
 	
+	// renvoie le fichier wave contenant le message d'accueil
+	protected String wavAccueil() {
+		// TODO ajouter nos sons
+		return "../ressources/sons/explicationDuel.wav";
+	}
+
+	// renvoie le fichier wave contenant la règle du jeu
+	protected String wavRegleJeu() {
+		// TODO ajouter nos sons
+		return "../ressources/sons/explicationDuel.wav";
+	}
+
+	// renvoie le fichier wave contenant la règle du jeu
+	protected String wavAide() {
+		// TODO ajouter nos sons
+		return "../ressources/sons/explicationDuel.wav";
+	}
 }
