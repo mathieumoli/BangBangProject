@@ -345,7 +345,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	@Override
 	public void buttonAEvent(MovementEvent event) {
 		
-		if(!gameMode) {
+		if(!engine.isInGame()) {
 			if(event.getSource() == wiimotesControllers[0]){
 				playerOneReady = true;
 			} else {
