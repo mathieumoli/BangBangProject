@@ -78,7 +78,7 @@ public class GameEngine {
 		wind.setLoadingVisible(false, 0);
 		wind.setLoadingVisible(false, 1);
 		gameTimer.stop();
-		gameTimer.setDelay(2500+r.nextInt(8000));
+		gameTimer.setInitialDelay(2500+r.nextInt(8000));
 		gameTimer.start();
 	}
 	public void playerShot(int player){
