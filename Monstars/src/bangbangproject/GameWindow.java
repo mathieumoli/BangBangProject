@@ -77,6 +77,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	
 	@Override
 	protected void init() {
+	 
 		// TODO Auto-generated method stub
 		playerOneReady = false;
 		playerTwoReady = false;
@@ -97,7 +98,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		aide.setWrapStyleWord(true);
 		aide.setEditable(false);
 		aide.setFocusable(false);
-		aide.setFont(new Font("Arial",Font.BOLD,Preferences.MEDIUM_SIZE));
+		aide.setFont(new Font("Arial",Font.BOLD,Preferences.SMALL_SIZE));
 		scrollPane = new JScrollPane(aide);
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(scrollPane);
@@ -382,11 +383,15 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		if(!gameMode) {
 			if(event.getSource() == wiimotesControllers[0]){
 				playerOneReady = true;
+				wiimotes[1].activateRumble();
 			} else {
 				playerTwoReady = true;
+				wiimotes[0].activateRumble();
 			}
 			
 			if(playerOneReady && playerTwoReady) {
+				wiimotes[0].deactivateRumble();
+				wiimotes[1].deactivateRumble();
 				setGameMode();
 				this.voix.forceStop();
 				playerOneReady = false;
