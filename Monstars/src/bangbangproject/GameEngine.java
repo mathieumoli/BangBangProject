@@ -16,8 +16,10 @@ public class GameEngine {
 	private int playerScore[];
 	private GameWindow wind;
 	private Timer errorTimer[];
-	private Timer gameTimer;
+	protected Timer gameTimer;
 	private Timer waitEndTimer;
+	private Timer readyTimer;
+	private boolean shootMode;
 	private Random r;
 	public GameEngine(int roundNumber, boolean mode,GameWindow wind){
 		this.roundNumber = roundNumber;
@@ -37,12 +39,15 @@ public class GameEngine {
 		misfire[0] = false;
 		misfire[1] = false;
 		errorTimer = new Timer[2];
-		errorTimer[0] = new Timer(800,new Reload(0));
-		errorTimer[1] = new Timer(800, new Reload(1));
+		errorTimer[0] = new Timer(1200,new Reload(0));
+		errorTimer[1] = new Timer(1200, new Reload(1));
 		gameTimer = new Timer(1000,taskPerformer);
 		gameTimer.setRepeats(false);
 		waitEndTimer = new Timer(350,waitLaunchPerformer);
 		waitEndTimer.setRepeats(false);
+		readyTimer = new Timer(100,readyListener);
+		readyTimer.setRepeats(false);
+		shootMode = false;
 		
 	}
 	ActionListener waitLaunchPerformer = new ActionListener() {
@@ -54,29 +59,50 @@ public class GameEngine {
 	ActionListener taskPerformer = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			canShoot[0] = true;
-			canShoot[1] = true;
-
-			wind.playSound("../ressources/sons/Electric_buzzer.wav");
-			System.out.println("goooooo");
+			wind.forceVoiceStop();
+			String sound = nextSound();
+			wind.playSound(sound);
+			if(isEndSound(sound)){
+				readyTimer.start();
+				gameTimer.stop();
+			}
 		}
 	};
+	
+	ActionListener readyListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(!misfire[0])
+				canShoot[0] = true;
+			if(!misfire[1])
+				canShoot[1] = true;
+			shootMode = true;
+		}
+	};
+	
 	public void reset(){
 		inGame = false;
 		//rounds = 0;
 		canShoot[0] = false;
 		canShoot[1] = false;
+		shootMode = false;
 	}
 	/**
 	 * The games wait 3 sec minimum for the countdown + a random time
 	 */
 	public void launchRound(){
 		reset();
-		System.out.println("launch round" + inGame);
 		rounds++;
 		inGame = true;
 		wind.setLoadingVisible(false, 0);
 		wind.setLoadingVisible(false, 1);
+		playStartSound();
+		initGameTimer();
+	}
+	protected void playStartSound(){
+		
+	}
+	protected void initGameTimer(){
 		gameTimer.stop();
 		gameTimer.setInitialDelay(2500+r.nextInt(8000));
 		gameTimer.start();
@@ -98,9 +124,9 @@ public class GameEngine {
 			inGame = false;
 			rounds++;
 			System.out.println("player "+player+" shoots");
-		} else if(misfire[player]){
+		} else if(misfire[player] && inGame){
 			wind.playSound("../ressources/sons/emptychamber.wav");
-		}else{
+		}else if(inGame){
 			wind.playerShoot(player);
 			wind.playSound("../ressources/sons/ricochet.wav");
 			errorTimer[player].start();
@@ -108,7 +134,6 @@ public class GameEngine {
 			misfire[player] = true;
 			wind.setLoadingVisible(true, player);
 		}
-		System.out.println("fire");
 	}
 	class Reload implements ActionListener {
 	private int player;
@@ -119,7 +144,8 @@ public class GameEngine {
 		public void actionPerformed(ActionEvent arg0) {
 			if(misfire[player]){
 				misfire[player] = false;
-				canShoot[player] = true;
+				if(shootMode)
+					canShoot[player] = true;
 				wind.playSound("../ressources/sons/reload.wav");
 				wind.setLoadingVisible(false, player);
 			}
@@ -151,4 +177,15 @@ public class GameEngine {
 		return playerScore[1];
 	}
 	
+	protected String nextSound(){
+		return "../ressources/sons/Electric_buzzer.wav";
+	}
+	
+	protected boolean isEndSound(String sound){
+		return true;
+	}
+	
+	protected GameWindow getWindow(){
+		return wind;
+	}
 }

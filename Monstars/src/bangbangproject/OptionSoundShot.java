@@ -35,9 +35,11 @@ public class OptionSoundShot extends OptionDuel {
 		JSlider difficulty = new JSlider(1, 3, 1);
 		rounds = new JPanel();
 		rounds.setLayout(sLayout);
+		difficulty.setMinimum(1);
 		difficulty.setMinorTickSpacing(1);
 		difficulty.setMajorTickSpacing(1);
 		difficulty.setPaintTicks(true);
+		difficulty.setValue(1);
 		difficulty.setPaintLabels(true);
 		difficulty.addChangeListener(new ChangeListener() {
 
@@ -50,24 +52,26 @@ public class OptionSoundShot extends OptionDuel {
 
 			}
 		});
-		letsGo.addActionListener(new ActionListener() {
+		letsGo.removeActionListener(letsGoListener);
+		letsGoListener = new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new GameWindow("Game ON", (int) tRounds.getValue(),
+				new GameWindow( (int) tRounds.getValue(), true,
 						(int) difficulty.getValue());
 				letsGo.removeActionListener(this);
 
 			}
 
-		});
+		};
+		letsGo.addActionListener(letsGoListener);
 		rounds.add(lDifficulty);
 		rounds.add(difficulty);
 		rounds.add(labelRound);
 		rounds.add(tRounds);
 		this.add(rounds, BorderLayout.CENTER);
 
-	}
+	}	
 
 	/**
 	 * Pour modifier la police des textes à chaque fois que l'on presse F4

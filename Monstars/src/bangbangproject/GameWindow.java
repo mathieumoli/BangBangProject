@@ -2,6 +2,7 @@ package bangbangproject;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -25,12 +26,14 @@ import wiiusej.Wiimote;
 import devintAPI.FenetreAbstraite;
 import devintAPI.Preferences;
 
-public class GameWindow extends FenetreAbstraite implements KeyListener, ControllerListener {
+public class GameWindow extends FenetreAbstraite implements KeyListener,
+		ControllerListener {
 
 	private boolean playerOneReady, playerTwoReady, gameMode;
 	private JPanel mainPanel;
 	private JPanel gamePanel;
 	private JPanel cardLayoutPanel;
+	private JPanel leftPane, rightPane;
 	private CowBoySprite leftCowBoy, rightCowBoy;
 	private JLabel timerLabel;
 	private int playerLeftScore, playerRightScore;
@@ -46,38 +49,43 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	private static String ressources = "../ressources/sons";
 	private static String player_1_name = "billythekid.wav";
 	private static String player_2_name = "joeydalton.wav";
-	
+
 	private boolean end = false;
+
 	public GameWindow(String title) {
-		this(3,false,0);	
+		this(3, false, 0);
 	}
-	
-	public GameWindow(int roundNumbers, boolean gameType, int difficulty){
+
+	public GameWindow(int roundNumbers, boolean gameType, int difficulty) {
 		super("Game ON");
-		wiimotes =  WiiUseApiManager.getWiimotes(2, true);
-		wiimotesControllers = new Controller[2];
-		wiimotesControllers[0] = new WiimoteController(wiimotes[0]);
-		wiimotesControllers[1] = new WiimoteController(wiimotes[1]);
-		wiimotesControllers[0].addControllerListener(this);
-		wiimotesControllers[1].addControllerListener(this);
-		engine = new GameEngine(roundNumbers,gameType,this);
-		System.out.println("Round numbers:"+roundNumbers);
+		wiimotes = WiiUseApiManager.getWiimotes(2, true);
+		/*
+		 * wiimotesControllers = new Controller[2]; wiimotesControllers[0] = new
+		 * WiimoteController(wiimotes[0]); wiimotesControllers[1] = new
+		 * WiimoteController(wiimotes[1]);
+		 * wiimotesControllers[0].addControllerListener(this);
+		 * wiimotesControllers[1].addControllerListener(this);
+		 */
+		if(!gameType)
+			engine = new GameEngine(roundNumbers, gameType, this);
+		else
+			engine = new SoundShotEngine(roundNumbers,gameType,this,difficulty);
+		System.out.println("Round numbers:" + roundNumbers);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		init();
 	}
-	
 
 	public GameWindow(String string, Object value) {
-		this(3,false,0);
+		this(3, false, 1);
 	}
-	
+
 	public GameWindow(String string, int value, int value2) {
-		this(3,false,0);
+		this(3, false, 1);
 	}
-	
+
 	@Override
 	protected void init() {
-	 
+
 		// TODO Auto-generated method stub
 		playerOneReady = false;
 		playerTwoReady = false;
@@ -98,7 +106,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		aide.setWrapStyleWord(true);
 		aide.setEditable(false);
 		aide.setFocusable(false);
-		aide.setFont(new Font("Arial",Font.BOLD,Preferences.SMALL_SIZE));
+		aide.setFont(new Font("Arial", Font.BOLD, Preferences.SMALL_SIZE));
 		scrollPane = new JScrollPane(aide);
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(scrollPane);
@@ -107,209 +115,222 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		initGameMode();
 		cardLayoutPanel.add(mainPanel, "test");
 		cardLayoutPanel.add(gamePanel, "gamee");
-		
+
 		mainPanel.setFocusable(false);
-		add(cardLayoutPanel,BorderLayout.CENTER);
+		add(cardLayoutPanel, BorderLayout.CENTER);
 		addKeyListener(this);
 	}
-	
-	private void setGameMode(){
-		CardLayout cl = (CardLayout)(cardLayoutPanel.getLayout());
+
+	private void setGameMode() {
+		CardLayout cl = (CardLayout) (cardLayoutPanel.getLayout());
 		cl.show(cardLayoutPanel, "gamee");
 		gameMode = true;
 		leftCowBoy.repaint();
 		rightCowBoy.repaint();
 	}
-	private void initGameMode(){
+
+	private void initGameMode() {
 
 		gamePanel = new JPanel();
 		gamePanel.setLayout(new BorderLayout());
 		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new GridLayout(1,3));
-		JPanel leftPane = new JPanel();
+		centerPanel.setLayout(new GridLayout(1, 3));
+		leftPane = new JPanel();
 		leftPane.setLayout(new BorderLayout());
-		JPanel rightPane = new JPanel();
+		rightPane = new JPanel();
 		rightPane.setLayout(new BorderLayout());
-		leftCowBoy = new CowBoySprite(CowBoySprite.LEFT,gamePanel);
-		rightCowBoy = new CowBoySprite(CowBoySprite.RIGHT,gamePanel);
+		leftCowBoy = new CowBoySprite(CowBoySprite.LEFT, gamePanel);
+		rightCowBoy = new CowBoySprite(CowBoySprite.RIGHT, gamePanel);
 		leftPane.add(leftCowBoy);
 		rightPane.add(rightCowBoy);
 		score = new JLabel(playerLeftScore + "-" + playerRightScore);
 		score.setHorizontalAlignment(JLabel.CENTER);
-		score.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		score.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		centerPanel.add(leftPane);
 		centerPanel.add(score);
 		centerPanel.add(rightPane);
 		timerLabel = new JLabel();
-		timerLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		timerLabel
+				.setFont(new Font("Arial", Font.BOLD, Preferences.LARGE_SIZE));
 		loadingLabels = new JLabel[2];
 		loadingLabels[0] = new JLabel("chargement");
 		loadingLabels[1] = new JLabel("chargement");
 		loadingLabels[0].setVisible(false);
 		loadingLabels[1].setVisible(false);
-		loadingLabels[0].setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+		loadingLabels[0].setFont(new Font("Arial", Font.BOLD,
+				Preferences.LARGE_SIZE));
 
-		loadingLabels[1].setFont(new Font("Arial",Font.BOLD,Preferences.MEDIUM_SIZE));
-		leftPane.add(loadingLabels[0],BorderLayout.SOUTH);
+		loadingLabels[1].setFont(new Font("Arial", Font.BOLD,
+				Preferences.MEDIUM_SIZE));
+		leftPane.add(loadingLabels[0], BorderLayout.SOUTH);
 		rightPane.add(loadingLabels[1], BorderLayout.SOUTH);
 		timerLabel.setHorizontalAlignment(JLabel.CENTER);
-		gamePanel.add(centerPanel,BorderLayout.CENTER);
-		gamePanel.add(timerLabel,BorderLayout.NORTH);
+		gamePanel.add(centerPanel, BorderLayout.CENTER);
+		gamePanel.add(timerLabel, BorderLayout.NORTH);
 	}
-	
-	public void setLoadingVisible(boolean visible,int player){
+
+	public void setLoadingVisible(boolean visible, int player) {
 		loadingLabels[player].setVisible(visible);
 		repaint();
 	}
-	
-	private void initEndGame(int playerNumber){
-		if(!end){
+
+	private void initEndGame(int playerNumber) {
+		if (!end) {
 			end = true;
 			JPanel endPanel = new JPanel();
-			endPanel.setLayout(new GridLayout(1,3));
+			endPanel.setLayout(new GridLayout(1, 3));
 			CowBoySprite c = getPlayerSprite(playerNumber);
 			c.resetState();
 			endPanel.add(c);
-			String winGame =getPlayerString(playerNumber) + " a gagné";
+			String winGame = getPlayerString(playerNumber) + " a gagné";
 			JLabel winLabel = new JLabel(winGame);
-			voix.playWav(getPlayerSound(playerNumber),true);
-			voix.playShortText(" a gagné",true);
-			winLabel.setFont(new Font("Arial",Font.BOLD,Preferences.LARGE_SIZE));
+			voix.playWav(getPlayerSound(playerNumber), true);
+			voix.playShortText(" a gagné", true);
+			winLabel.setFont(new Font("Arial", Font.BOLD,
+					Preferences.LARGE_SIZE));
 			endPanel.add(winLabel);
 			cardLayoutPanel.add(endPanel, "end");
 			CardLayout cl = (CardLayout) cardLayoutPanel.getLayout();
-			cl.show(cardLayoutPanel,"end");
+			cl.show(cardLayoutPanel, "end");
 		}
-		
+
 	}
-	public String getPlayerString(int playerNumber){
-		if(playerNumber == 0){
+
+	public String getPlayerString(int playerNumber) {
+		if (playerNumber == 0) {
 			return "Billy the kid";
 		} else {
 			return "Joey Dalton";
 		}
 	}
-	public String getPlayerSound(int playerNumber){
+
+	public String getPlayerSound(int playerNumber) {
 		String base = ressources;
-		if(playerNumber == 0){
-			return base+"/billythekid.wav";
+		if (playerNumber == 0) {
+			return base + "/billythekid.wav";
 		} else {
 			return base + "/joeydalton.wav";
 		}
 	}
-	private CowBoySprite getPlayerSprite(int playerNumber){
+
+	private CowBoySprite getPlayerSprite(int playerNumber) {
 		CowBoySprite sprite;
-		if(playerNumber == 0){
+		if (playerNumber == 0) {
 			sprite = leftCowBoy;
 		} else
 			sprite = rightCowBoy;
 		return sprite;
 	}
-	
-	public void playerShoot(int playerNumber){
+
+	public void playerShoot(int playerNumber) {
 		CowBoySprite sprite = getPlayerSprite(playerNumber);
 		sprite.setShootState();
 	}
-	
-	public void playerDead(int playerNumber){
-		//if(gameMode){
-			getPlayerSprite(playerNumber).setDeadState();
-			score.setText(engine.getPlayerScore(0)+"-"+engine.getPlayerScore(1));
-			startResetTimer();
 
-		//}
+	public void playerDead(int playerNumber) {
+		JPanel redPane,greenPane;
+		if (playerNumber == 0) {
+			redPane = leftPane;
+			greenPane = rightPane;
+		} else {
+			redPane = rightPane;
+			greenPane = leftPane;
+		}
+		redPane.setBackground(Color.RED);
+		greenPane.setBackground(Color.GREEN);
+		getPlayerSprite(playerNumber).setDeadState();
+		score.setText(engine.getPlayerScore(0) + "-" + engine.getPlayerScore(1));
+		startResetTimer();
 	}
-	
-	public void startResetTimer(){
-		//gameMode = false;
+
+	public void startResetTimer() {
+		// gameMode = false;
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			
+
 				resetState();
-				
+
 			}
 		};
-		Timer t = new Timer(1000,taskPerformer);
+		Timer t = new Timer(3000, taskPerformer);
 		t.setRepeats(false);
 		t.start();
 	}
 
 	public void startGameTimer() {
-		//if(timer == null  || !timer.isRunning()){
+		// if(timer == null || !timer.isRunning()){
 		boolean launch = false;
-		if(engine.Round() > 0 && engine.maxScore() < engine.RoundNumber()){
-			voix.playWav(getPlayerSound(0),true);
-			voix.playShortText(engine.getPlayerScore(0) +"",true);
-			voix.playWav(getPlayerSound(1),true);
-			voix.playShortText(engine.getPlayerScore(1) +"",true);
+		if (engine.Round() > 0 && engine.maxScore() < engine.RoundNumber()) {
+			voix.playWav(getPlayerSound(0), true);
+			voix.playShortText(engine.getPlayerScore(0) + "", true);
+			voix.playWav(getPlayerSound(1), true);
+			voix.playShortText(engine.getPlayerScore(1) + "", true);
 			launch = true;
 		}
-		if(engine.maxScore() >=  engine.RoundNumber() ){
+		if (engine.maxScore() >= engine.RoundNumber()) {
 			initEndGame(engine.getWinner());
 		}
-		
+
 		gameStarted = false;
 		timerValue = 3;
-		if(engine == null)
-			engine = new GameEngine(3,true,this);
+		if (engine == null)
+			engine = new GameEngine(3, true, this);
 		timerLabel.setText("be ready !");
 		ActionListener taskPerformer = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!end)
+				if (!end)
 					engine.launchRound();
-				
-				/*		if(timerValue <= 1){
 
-					engine.launchRound();
-					System.out.println("round launched");
-					timer.stop();
-					timerLabel.setText("be ready !");
-				}
-				 else {
-					timerLabel.setText(--timerValue + "");
-					voix.playShortText(timerValue + "");
-				 }
-			}*/
-			timer.stop();
-		}};
+				/*
+				 * if(timerValue <= 1){
+				 * 
+				 * engine.launchRound(); System.out.println("round launched");
+				 * timer.stop(); timerLabel.setText("be ready !"); } else {
+				 * timerLabel.setText(--timerValue + "");
+				 * voix.playShortText(timerValue + ""); } }
+				 */
+				timer.stop();
+			}
+		};
 		int time = 0;
-		if(launch)
+		if (launch)
 			time = 10000;
-		
-			timer = new Timer(time,taskPerformer);
-			timer.setRepeats(false);
-		
-			timer.start();
-		//}
+
+		timer = new Timer(time, taskPerformer);
+		timer.setRepeats(false);
+
+		timer.start();
+		// }
 	}
-	
-	public void resetState(){
+
+	public void resetState() {
 		gameMode = true;
 		leftCowBoy.resetState();
 		rightCowBoy.resetState();
+		leftPane.setBackground(Color.WHITE);
+		rightPane.setBackground(Color.WHITE);
 	}
-	
-	public  void changeColor() {
-    	// on récupère les couleurs de base dans la classe Preferences 
+
+	public void changeColor() {
+		// on récupère les couleurs de base dans la classe Preferences
 		Preferences pref = Preferences.getData();
 		aide.setBackground(pref.getCurrentBackgroundColor());
 		aide.setForeground(pref.getCurrentForegroundColor());
 	}
-	
+
 	/**
-	 * Pour modifier la police des textes à chaque fois que l'on presse F4 
+	 * Pour modifier la police des textes à chaque fois que l'on presse F4
 	 */
-	public void changeSize(){
+	public void changeSize() {
 		Font f = Preferences.getData().getCurrentFont();
 		aide.setFont(f);
 	}
-	
-	
-	public void keyReleased(KeyEvent e){
-		if(!gameMode){
-			switch(e.getKeyChar()){
+
+	public void keyReleased(KeyEvent e) {
+		if (!gameMode) {
+			switch (e.getKeyChar()) {
 			case 'a':
 				playerOneReady = true;
 				break;
@@ -317,15 +338,15 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 				playerTwoReady = true;
 				break;
 			}
-			if(playerOneReady && playerTwoReady){
+			if (playerOneReady && playerTwoReady) {
 				setGameMode();
 				playerOneReady = false;
 				playerTwoReady = false;
 				startGameTimer();
-				//removeKeyListener(this);
+				// removeKeyListener(this);
 			}
-		} else if(engine.isInGame()){
-			switch(e.getKeyChar()){
+		} else if (engine.isInGame()) {
+			switch (e.getKeyChar()) {
 			case 'a':
 				engine.playerShot(0);
 				break;
@@ -335,11 +356,11 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 			}
 		}
 	}
-	
-	public void playSound(String wavSound){
+
+	public void playSound(String wavSound) {
 		voix.playWav(wavSound);
 	}
-	
+
 	/**
 	 * Return the direction of the wiimotes
 	 */
@@ -354,42 +375,42 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 			// System.out.println("Wiimote 2 : " + event.getDirection());
 		}
 	}
-	
+
 	/**
 	 * Return the shoot event of the wiimotes
 	 */
 	@Override
 	public void getShootEvent(MovementEvent event) {
-		
-		if(engine != null && engine.isInGame()) {
+
+		if (engine != null && engine.isInGame()) {
 			int orig;
-			
-			if(event.getSource() == wiimotesControllers[0]) {
+
+			if (event.getSource() == wiimotesControllers[0]) {
 				orig = 0;
 			} else {
 				orig = 1;
 			}
-			
+
 			engine.playerShot(orig);
 		}
 	}
-	
+
 	/**
 	 * Return the ready event of the wiimotes
 	 */
 	@Override
 	public void buttonAEvent(MovementEvent event) {
 		System.out.println("button a event");
-		if(!gameMode) {
-			if(event.getSource() == wiimotesControllers[0]){
+		if (!gameMode) {
+			if (event.getSource() == wiimotesControllers[0]) {
 				playerOneReady = true;
 				wiimotes[1].activateRumble();
 			} else {
 				playerTwoReady = true;
 				wiimotes[0].activateRumble();
 			}
-			
-			if(playerOneReady && playerTwoReady) {
+
+			if (playerOneReady && playerTwoReady) {
 				wiimotes[0].deactivateRumble();
 				wiimotes[1].deactivateRumble();
 				setGameMode();
@@ -397,8 +418,8 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 				playerOneReady = false;
 				playerTwoReady = false;
 				startGameTimer();
-				this.voix.forceStop();
-				//removeKeyListener(this);
+				//this.voix.forceStop();
+				// removeKeyListener(this);
 			}
 		}
 	}
@@ -408,26 +429,26 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 	 */
 	@Override
 	public void buttonUpEvent(MovementEvent event) {
-		
+
 		if (event.getSource() == wiimotesControllers[0]) {
 			System.out.println("Wiimote 1 : up event !");
 		}
-		
+
 		if (event.getSource() == wiimotesControllers[1]) {
 			System.out.println("Wiimote : up event !");
 		}
 	}
-	
+
 	/**
 	 * Return the down event of the wiimotes
 	 */
 	@Override
 	public void buttonDownEvent(MovementEvent event) {
-		
+
 		if (event.getSource() == wiimotesControllers[0]) {
 			System.out.println("Wiimote 1 : down event !");
 		}
-		
+
 		if (event.getSource() == wiimotesControllers[1]) {
 			System.out.println("Wiimote : down event !");
 		}
@@ -442,7 +463,7 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		if (event.getSource() == wiimotesControllers[0]) {
 			System.out.println("Wiimote 1 : plus event !");
 		}
-		
+
 		if (event.getSource() == wiimotesControllers[1]) {
 			System.out.println("Wiimote : plus event !");
 		}
@@ -457,24 +478,33 @@ public class GameWindow extends FenetreAbstraite implements KeyListener, Control
 		if (event.getSource() == wiimotesControllers[0]) {
 			System.out.println("Wiimote 1 : minus event !");
 		}
-		
+
 		if (event.getSource() == wiimotesControllers[1]) {
 			System.out.println("Wiimote : minus event !");
 		}
 	}
-	
+
 	// renvoie le fichier wave contenant le message d'accueil
 	protected String wavAccueil() {
-				return "../ressources/sons/explicationDuel.wav";
+		return "../ressources/sons/explicationDuel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavRegleJeu() {
-				return "../ressources/sons/explicationDuel.wav";
+		return "../ressources/sons/explicationDuel.wav";
 	}
 
 	// renvoie le fichier wave contenant la règle du jeu
 	protected String wavAide() {
-				return "../ressources/sons/explicationDuel.wav";
+		return "../ressources/sons/explicationDuel.wav";
+	}
+	
+	public void forceVoiceStop(){
+		voix.forceStop();
+		voix.stop();
+	}
+	
+	public void playVoix(String text, boolean force){
+		voix.playShortText(text,force);
 	}
 }
