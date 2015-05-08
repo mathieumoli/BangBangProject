@@ -61,7 +61,7 @@ public class GameEngine {
 		public void actionPerformed(ActionEvent e) {
 			wind.forceVoiceStop();
 			String sound = nextSound();
-			wind.playSound(sound);
+			wind.playSound(sound,1000);
 			if(isEndSound(sound)){
 				readyTimer.start();
 				gameTimer.stop();

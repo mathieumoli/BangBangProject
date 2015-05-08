@@ -361,6 +361,20 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,
 		voix.playWav(wavSound);
 	}
 
+	public void playSound(String wavSound, int timeMs){
+		voix.playWav(wavSound);
+		ActionListener taskPerformer = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				voix.forceStop();
+			}
+			
+		};
+		Timer t  = new Timer(timeMs,taskPerformer);
+		t.setRepeats(false);
+		t.start();
+	}
+	
 	/**
 	 * Return the direction of the wiimotes
 	 */
