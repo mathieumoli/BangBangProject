@@ -96,8 +96,8 @@ public class GameEngine {
 		inGame = true;
 		wind.setLoadingVisible(false, 0);
 		wind.setLoadingVisible(false, 1);
-		playStartSound();
 		initGameTimer();
+		playStartSound();
 	}
 	protected void playStartSound(){
 		

@@ -19,17 +19,22 @@ public class SoundShotEngine  extends GameEngine{
 		this.difficulty = diff;
 		random = new Random();
 		System.out.println("difficulty:"+difficulty);
-		base = base+difficulty+"/"+"animaux/";
-		randomSound();
+		if(difficulty ==  3)
+			base = base+3+"/";
+		else
+			base =  base+1+"/";
+		//System.out.println(randomSound());
+		
 	}
 	
 	@Override
 	protected void playStartSound(){
+		System.out.println("playstartsound");
 		getWindow().playVoix("tirez au son de",true);
 		if(difficulty ==  1){
 			getWindow().playSound(base+shootSound,300);
 		} else {
-			getWindow().playVoix(shootSound.split(".")[0],true);
+			getWindow().playVoix(shootSound.split("\\.")[0],true);
 		}
 	}
 	private String randomSound(){
@@ -52,6 +57,7 @@ public class SoundShotEngine  extends GameEngine{
 	}
 	@Override
 	protected void initGameTimer(){
+		System.out.println("initgametimer");
 		gameTimer.stop();
 		gameTimer.setInitialDelay(5500+random.nextInt(1500));
 		gameTimer.setDelay(2500+random.nextInt(300));
@@ -60,6 +66,7 @@ public class SoundShotEngine  extends GameEngine{
 		gameTimer.start();
 		soundFiles = null;
 		end = false;
+		randomSound();
 	}
 	@Override
 	protected boolean isEndSound(String sound){
@@ -70,6 +77,7 @@ public class SoundShotEngine  extends GameEngine{
 		
 		if(random.nextInt(100)>80 && chosenSong >= 0){
 			end = true;
+			System.out.println("endsong");
 			return base+shootSound;
 		}
 		String soundToPlay = base+randomSound();
