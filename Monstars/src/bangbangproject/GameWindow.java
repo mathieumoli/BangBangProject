@@ -374,6 +374,20 @@ public class GameWindow extends FenetreAbstraite implements KeyListener,
 		t.setRepeats(false);
 		t.start();
 	}
+
+	public void playVoix(String text, int timeMs){
+		voix.playShortText(text,true);
+		ActionListener taskPerformer = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				voix.forceStop();
+			}
+			
+		};
+		Timer t  = new Timer(timeMs,taskPerformer);
+		t.setRepeats(false);
+		t.start();
+	}
 	
 	/**
 	 * Return the direction of the wiimotes

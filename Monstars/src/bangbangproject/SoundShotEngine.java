@@ -30,10 +30,12 @@ public class SoundShotEngine  extends GameEngine{
 	@Override
 	protected void playStartSound(){
 		System.out.println("playstartsound");
-		getWindow().playVoix("tirez au son de",true);
 		if(difficulty ==  1){
-			getWindow().playSound(base+shootSound,300);
+
+			getWindow().playVoix("tirez au son de",true);
+			getWindow().playSound(base+shootSound);
 		} else {
+			getWindow().playVoix("tirez au son de",true);
 			getWindow().playVoix(shootSound.split("\\.")[0],true);
 		}
 	}
@@ -59,7 +61,7 @@ public class SoundShotEngine  extends GameEngine{
 	protected void initGameTimer(){
 		System.out.println("initgametimer");
 		gameTimer.stop();
-		gameTimer.setInitialDelay(5500+random.nextInt(1500));
+		gameTimer.setInitialDelay(9000+random.nextInt(1500));
 		gameTimer.setDelay(2500+random.nextInt(300));
 		gameTimer.setRepeats(true);
 		chosenSong = -1;
